@@ -1,58 +1,90 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Eliminar producto del carrito
-    const botonesEliminar = document.querySelectorAll('.btnEliminar');
-    botonesEliminar.forEach(boton => {
-        boton.addEventListener('click', function() {
-            const id = boton.getAttribute('data-id');
-            eliminarDelCarrito(id);
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.inputCantidad').forEach(input => {
+      input.addEventListener('change', e => {
+        const id = e.target.dataset.id;
+        let cantidad = parseInt(e.target.value);
+        if (isNaN(cantidad) || cantidad < 1) {
+          cantidad = 1;
+          e.target.value = 1;
+        }
+        actualizarCantidad(id, cantidad);
+      });
     });
-
-    // Vaciar el carrito
-    const botonVaciarCarrito = document.getElementById('vaciarCarrito');
-    if (botonVaciarCarrito) {
-        botonVaciarCarrito.addEventListener('click', function() {
-            vaciarCarrito();
-        });
+  
+    document.querySelectorAll('.btnEliminar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        eliminarProducto(id);
+      });
+    });
+  
+    const btnVaciar = document.getElementById('vaciarCarrito');
+    if (btnVaciar) {
+      btnVaciar.addEventListener('click', () => {
+        if (confirm('¿Seguro que quieres vaciar el carrito?')) {
+          vaciarCarrito();
+        }
+      });
     }
-
-    function eliminarDelCarrito(id) {
-        fetch('app/controladores/controladorCarrito.php', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: id })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Producto eliminado del carrito');
-                location.reload(); // Recargar la página para actualizar el carrito
-            } else {
-                alert('Error al eliminar el producto del carrito');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    function vaciarCarrito() {
-        fetch('app/controladores/controladorCarrito.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ action: 'vaciar' })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Carrito vaciado');
-                location.reload(); // Recargar la página para actualizar el carrito
-            } else {
-                alert('Error al vaciar el carrito');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-});
+  });
+  
+  function actualizarCantidad(id, cantidad) {
+    fetch('/proyecto/app/controladores/controladorCarrito.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({
+        accion: 'actualizarCantidad',
+        id: id,
+        cantidad: cantidad
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('Error al actualizar la cantidad');
+      }
+    })
+    .catch(() => alert('Error en la comunicación con el servidor'));
+  }
+  
+  function eliminarProducto(id) {
+    fetch('/proyecto/app/controladores/controladorCarrito.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({
+        accion: 'eliminarProducto',
+        id: id
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('Error al eliminar el producto');
+      }
+    })
+    .catch(() => alert('Error en la comunicación con el servidor'));
+  }
+  
+  function vaciarCarrito() {
+    fetch('/proyecto/app/controladores/controladorCarrito.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({
+        accion: 'vaciarCarrito'
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('Error al vaciar el carrito');
+      }
+    })
+    .catch(() => alert('Error en la comunicación con el servidor'));
+  }
+  

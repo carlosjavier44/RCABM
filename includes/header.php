@@ -34,7 +34,6 @@ if (session_status() == PHP_SESSION_NONE) {
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                     <li><button class="dropdown-item" id="btnPedidos">Pedidos</button></li>
                     <li><button class="dropdown-item" id="btnCarrito">Carrito</button></li>
-                    <li><button class="dropdown-item" id="btnSeguimiento">Seguimiento</button></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>

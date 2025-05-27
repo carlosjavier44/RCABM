@@ -9,7 +9,6 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Verificar si se ha enviado una búsqueda
 $productos = [];
 $termino = '';
 
@@ -37,21 +36,23 @@ if (isset($_GET['q']) && !empty(trim($_GET['q']))) {
     <?php if ($result && $result->num_rows > 0): ?>
         <?php while ($producto = $result->fetch_assoc()): ?>
             <div class="col">
-                <div class="card h-100 d-flex justify-content-center align-items-centers">
-                    <?php if ($producto['imagen']): ?>
-                        <img src="<?php echo htmlspecialchars($producto['imagen']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
-                    <?php else: ?>
-                        <img src="public/img/default-product.png" class="card-img-top" alt="Imagen no disponible">
-                    <?php endif; ?>
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><?php echo htmlspecialchars($producto['nombre']); ?></h5>
-                        <p class="card-text"><?php echo htmlspecialchars($producto['descripcion']); ?></p>
-                        <p class="card-text"><strong>Precio: </strong><?php echo number_format($producto['precio'], 2, ',', '.'); ?> €</p>
+                <a href="javascript:void(0);" onclick="loadView('detalle', <?= $producto['id'] ?>)" class="text-decoration-none text-dark">
+                    <div class="card h-100 d-flex justify-content-center align-items-center">
+                        <?php if ($producto['imagen']): ?>
+                            <img src="<?= htmlspecialchars($producto['imagen']); ?>" class="card-img-top" alt="<?= htmlspecialchars($producto['nombre']); ?>">
+                        <?php else: ?>
+                            <img src="public/img/default-product.png" class="card-img-top" alt="Imagen no disponible">
+                        <?php endif; ?>
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><?= htmlspecialchars($producto['nombre']); ?></h5>
+                            <p class="card-text"><?= htmlspecialchars($producto['descripcion']); ?></p>
+                            <p class="card-text"><strong>Precio: </strong><?= number_format($producto['precio'], 2, ',', '.'); ?> €</p>
+                        </div>
+                        <div class="d-grid col-6 mx-auto mb-4">
+                            <span class="btn btn-outline-primary">Ver más</span>
+                        </div>
                     </div>
-                    <div class="d-grid col-6 mx-auto mb-4">
-                        <button class="btn btn-primary mx-auto"><small>Añadir al carrito</small></button>
-                    </div>
-                </div>
+                </a>
             </div>
         <?php endwhile; ?>
     <?php else: ?>

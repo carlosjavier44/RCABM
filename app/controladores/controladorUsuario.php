@@ -10,7 +10,6 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Logout por GET (opcional)
 if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     session_destroy();
     header('Location: /proyecto/?view=login');
@@ -19,7 +18,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($_POST['accion'] === 'register') {
-        // Registro (igual que antes)
         $nombre = $conn->real_escape_string($_POST["nombre"] ?? '');
         $email = $conn->real_escape_string($_POST["email"] ?? '');
         $contraseña = $_POST["contraseña"] ?? '';
@@ -52,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
 
     } elseif ($_POST['accion'] === 'login') {
-        // Login (igual que antes)
         $email = $conn->real_escape_string($_POST["email"] ?? '');
         $contraseña = $_POST["contraseña"] ?? '';
 
@@ -87,7 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $conn->close();
 
     } elseif ($_POST['accion'] === 'logout') {
-        // Aquí se procesa el logout desde el formulario POST
         session_destroy();
         header('Location: /proyecto/?view=login');
         exit();

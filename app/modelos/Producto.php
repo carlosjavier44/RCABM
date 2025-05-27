@@ -7,7 +7,6 @@ class Producto {
         $this->conn = $conn;
     }
 
-    // Obtener todos los productos
     public function obtenerProductos() {
         $sql = "SELECT * FROM productos";
         $result = $this->conn->query($sql);

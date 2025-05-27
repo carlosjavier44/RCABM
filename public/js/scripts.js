@@ -8,33 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnTodos = document.getElementById('btnTodos');
     const mainContent = document.getElementById('main');
 
-    btnInicio.addEventListener('click', function () {
-        loadView('productos');
-    });
-
-    btnTodos.addEventListener('click', function () {
-        loadView('productos');
-    });
-
-    btnLogin.addEventListener('click', function () {
-        loadView('login');
-    });
-
-    btnCarrito.addEventListener('click', function () {
-        loadView('carrito');
-    });
-
-    btnChat.addEventListener('click', function () {
-        loadView('chat');
-    });
-
-    btnPedidos.addEventListener('click', function () {
-        loadView('pedidos');
-    });
-
-    btnRegister.addEventListener('click', function () {
-        loadView('register');
-    });
+    if (btnInicio) btnInicio.addEventListener('click', () => loadView('productos'));
+    if (btnTodos) btnTodos.addEventListener('click', () => loadView('productos'));
+    if (btnLogin) btnLogin.addEventListener('click', () => loadView('login'));
+    if (btnCarrito) btnCarrito.addEventListener('click', () => loadView('carrito'));
+    if (btnChat) btnChat.addEventListener('click', () => loadView('chat'));
+    if (btnPedidos) btnPedidos.addEventListener('click', () => loadView('pedidos'));
+    if (btnRegister) btnRegister.addEventListener('click', () => loadView('register'));
 
     window.addEventListener('popstate', function (event) {
         if (event.state) {
@@ -42,14 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function loadView(view, categoria = '') {
+    window.loadView = function(view, parametro = '') {
         let file = '';
         let url = '';
-    
+
         switch (view) {
             case 'productos':
                 file = 'productos/productos';
-                url = `app/vistas/${file}.php${categoria ? '?categoria=' + encodeURIComponent(categoria) : ''}`;
+                url = `app/vistas/${file}.php${parametro ? '?categoria=' + encodeURIComponent(parametro) : ''}`;
                 break;
             case 'carrito':
                 file = 'carrito/ver_carrito';
@@ -64,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 url = `app/vistas/${file}.php`;
                 break;
             case 'detalle':
-                file = 'pedidos/detalle';
-                url = `app/vistas/${file}.php`;
+                file = 'productos/detalle';
+                url = `app/vistas/${file}.php?id=${encodeURIComponent(parametro)}`;
                 break;
             case 'finalizar_compra':
                 file = 'carrito/finalizar_compra';
@@ -86,16 +66,20 @@ document.addEventListener('DOMContentLoaded', function () {
             default:
                 return;
         }
-    
+
         fetch(url)
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) throw new Error('Error al cargar la vista');
+                return response.text();
+            })
             .then(data => {
                 mainContent.innerHTML = data;
-                history.pushState({ page: view }, view, `?view=${view}${categoria ? '&categoria=' + encodeURIComponent(categoria) : ''}`);
+                history.pushState({ page: view }, '', `?view=${view}${parametro ? `&id=${parametro}` : ''}`);
+                mainContent.dataset.loadedView = view;
             })
             .catch(error => {
-                console.error(`Error al cargar la vista de ${view}:`, error);
+                mainContent.innerHTML = '<h2 class="text-center text-danger">Error al cargar la vista</h2>';
+                console.error(error);
             });
-    }
-    
+    };
 });
