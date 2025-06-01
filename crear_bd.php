@@ -18,6 +18,7 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->select_db($nombre_bd);
 
+// Crear tabla usuarios
 $conn->query("CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -27,6 +28,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS usuarios (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
+// Crear tabla productos
 $conn->query("CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -34,9 +36,11 @@ $conn->query("CREATE TABLE IF NOT EXISTS productos (
     precio DECIMAL(10,2) NOT NULL,
     stock INT NOT NULL,
     imagen VARCHAR(255) DEFAULT NULL,
-    categoria VARCHAR(100) NOT NULL
+    categoria VARCHAR(100) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
+// Crear tabla pedidos
 $conn->query("CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -46,6 +50,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS pedidos (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 )");
 
+// Crear tabla detalles_pedido
 $conn->query("CREATE TABLE IF NOT EXISTS detalles_pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pedido_id INT NOT NULL,
@@ -56,6 +61,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS detalles_pedido (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 )");
 
+// Crear tabla carrito
 $conn->query("CREATE TABLE IF NOT EXISTS carrito (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -65,17 +71,20 @@ $conn->query("CREATE TABLE IF NOT EXISTS carrito (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 )");
 
+// Crear tabla mensajes
 $conn->query("CREATE TABLE IF NOT EXISTS mensajes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
+    emisor_id INT NOT NULL,
+    receptor_id INT NOT NULL,
     mensaje TEXT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    FOREIGN KEY (emisor_id) REFERENCES usuarios(id),
+    FOREIGN KEY (receptor_id) REFERENCES usuarios(id)
 )");
 
 echo "Tablas creadas correctamente.<br>";
 
-// Insertar usuario de ejemplo si no existe
+// Insertar usuario de prueba Carlos
 $email = 'a@gmail.com';
 $password = password_hash('Carloscajar4@', PASSWORD_DEFAULT);
 $nombre = 'Carlos';
@@ -86,13 +95,37 @@ $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
-    $stmt_insert = $conn->prepare("INSERT INTO usuarios (nombre, email, contraseña) VALUES (?, ?, ?)");
-    $stmt_insert->bind_param("sss", $nombre, $email, $password);
+    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contraseña) VALUES (?, ?, ?, ?)");
+    $id_usuario = 4;
+    $stmt_insert->bind_param("isss", $id_usuario, $nombre, $email, $password);
     $stmt_insert->execute();
     echo "Usuario de prueba insertado.<br>";
     $stmt_insert->close();
 } else {
     echo "El usuario ya existe, no se insertó.<br>";
+}
+$stmt->close();
+
+// Insertar usuario admin
+$email = 'admin@gmail.com';
+$password = password_hash('Carloscajar4@', PASSWORD_DEFAULT);
+$nombre = 'admin';
+$rol = 'admin';
+
+$stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows === 0) {
+    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contraseña, rol) VALUES (?, ?, ?, ?, ?)");
+    $id_admin = 1;
+    $stmt_insert->bind_param("issss", $id_admin, $nombre, $email, $password, $rol);
+    $stmt_insert->execute();
+    echo "Usuario administrador insertado.<br>";
+    $stmt_insert->close();
+} else {
+    echo "El usuario admin ya existe, no se insertó.<br>";
 }
 $stmt->close();
 
@@ -109,7 +142,7 @@ $productos = [
 
 foreach ($productos as $producto) {
     [$id, $nombre, $descripcion, $precio, $stock, $imagen, $categoria] = $producto;
-    
+
     $stmt_check = $conn->prepare("SELECT id FROM productos WHERE id = ?");
     $stmt_check->bind_param("i", $id);
     $stmt_check->execute();

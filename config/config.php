@@ -1,4 +1,7 @@
 <?php
+
+define('BASE_URL', '/proyecto');
+
 $host = "localhost";
 $usuario = "root";
 $contraseña = "";

@@ -41,15 +41,26 @@ ob_start();
             'register' => 'app/vistas/usuarios/register.php',
             'productos' => 'app/vistas/productos/productos.php',
             'carrito' => 'app/vistas/carrito/ver_carrito.php',
-            'chat' => 'app/vistas/chat/chat.php',
+            'chat' => '', // se gestiona aparte por rol
             'pedidos' => 'app/vistas/pedidos/lista.php',
             'detalle' => 'app/vistas/productos/detalle.php',
             'seguimiento' => 'app/vistas/productos/seguimiento.php',
-            'finalizar_compra' => 'app/vistas/carrito/finalizar_compra.php'
+            'finalizar_compra' => 'app/vistas/carrito/finalizar_compra.php',
+            'detalle_pedido' => 'app/vistas/pedidos/detalle_pedido.php',
+            'admin_pedidos' => 'app/vistas/pedidos/admin_pedidos.php',
+            'detalle_admin' => 'app/vistas/pedidos/detalle_admin.php',
         ];
 
         if (array_key_exists($view, $valid_views)) {
-            include __DIR__ . '/' . $valid_views[$view];
+            if ($view === 'chat') {
+                if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin') {
+                    include __DIR__ . '/app/vistas/chat/admin.php';
+                } else {
+                    include __DIR__ . '/app/vistas/chat/chat.php';
+                }
+            } else {
+                include __DIR__ . '/' . $valid_views[$view];
+            }
         } else {
             echo "<h2 class='text-center'>Página no encontrada</h2>";
         }

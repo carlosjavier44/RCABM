@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../config/config.php';
+require_once __DIR__ . '/../../../app/modelos/Carrito.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -42,45 +43,21 @@ if ($producto = $result->fetch_assoc()):
             <p><?= htmlspecialchars($producto['descripcion']) ?></p>
             <p><strong>Stock disponible:</strong> <?= $producto['stock'] ?></p>
 
-            <button class="btn btn-success mt-3" id="btnAñadirCarrito" data-id="<?= $producto['id'] ?>">Añadir al carrito</button>
-            <div id="mensajeCarrito" class="mt-2"></div>
+            <?php if (isset($_SESSION['usuario'])): ?>
+                <form method="post" action="">
+                    <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
+                    <input type="submit" name="añadir_carrito" class="btn btn-success mt-3" value="Añadir al carrito">
+                </form>
+                <div class="mt-2 text-success">
+                    <?= isset($_SESSION['mensaje_carrito']) ? $_SESSION['mensaje_carrito'] : '' ?>
+                    <?php unset($_SESSION['mensaje_carrito']); ?>
+                </div>
+            <?php else: ?>
+                <p class="text-danger mt-3">Inicia sesión para añadir al carrito.</p>
+            <?php endif; ?>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const btnAñadir = document.getElementById('btnAñadirCarrito');
-    const mensaje = document.getElementById('mensajeCarrito');
-
-    if (btnAñadir) {
-        btnAñadir.addEventListener('click', function() {
-            const id = btnAñadir.getAttribute('data-id');
-            if (!id) return;
-
-            fetch('/app/controladores/controladorCarrito.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'add', id: parseInt(id) })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    mensaje.textContent = 'Producto añadido al carrito';
-                    mensaje.style.color = 'green';
-                } else {
-                    mensaje.textContent = data.message || 'Error al añadir producto';
-                    mensaje.style.color = 'red';
-                }
-            })
-            .catch(() => {
-                mensaje.textContent = 'Error en la comunicación con el servidor';
-                mensaje.style.color = 'red';
-            });
-        });
-    }
-});
-</script>
 </body>
 </html>
 
@@ -88,6 +65,17 @@ document.addEventListener('DOMContentLoaded', function() {
 else:
     echo "<p class='text-center text-danger'>Producto no encontrado.</p>";
 endif;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir_carrito'], $_SESSION['usuario'])) {
+    $producto_id = (int) $_POST['producto_id'];
+    $usuario_id = $_SESSION['usuario']['id'];
+    $carrito = new Carrito($conn);
+    $carrito->añadirProducto($usuario_id, $producto_id, 1);
+    $_SESSION['mensaje_carrito'] = 'Producto añadido al carrito correctamente';
+    header("Location: /proyecto/index.php?view=detalle&id=" . $producto_id);
+
+    exit;
+}
 
 $conn->close();
 ?>

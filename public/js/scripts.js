@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnRegister = document.getElementById('btnRegister');
     const btnLogin = document.getElementById('btnLogin');
     const btnTodos = document.getElementById('btnTodos');
+    const btnAdminPedidos = document.getElementById('btnAdminPedidos');
+
     const mainContent = document.getElementById('main');
 
     if (btnInicio) btnInicio.addEventListener('click', () => loadView('productos'));
@@ -15,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnChat) btnChat.addEventListener('click', () => loadView('chat'));
     if (btnPedidos) btnPedidos.addEventListener('click', () => loadView('pedidos'));
     if (btnRegister) btnRegister.addEventListener('click', () => loadView('register'));
+    if (btnAdminPedidos) btnAdminPedidos.addEventListener('click', () => loadView('admin_pedidos'));
 
     window.addEventListener('popstate', function (event) {
         if (event.state) {
@@ -22,7 +25,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    window.loadView = function(view, parametro = '') {
+    document.querySelectorAll('.btn-categoria').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const categoria = btn.getAttribute('data-categoria');
+            let url = 'index.php?view=productos';
+            if (categoria) {
+                url += '&categoria=' + encodeURIComponent(categoria);
+            }
+            window.location.href = url;
+        });
+    });
+
+    window.loadView = function (view, parametro = '') {
         let file = '';
         let url = '';
 
@@ -47,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 file = 'productos/detalle';
                 url = `app/vistas/${file}.php?id=${encodeURIComponent(parametro)}`;
                 break;
-            case 'finalizar_compra':
+            case 'finalizar':
                 file = 'carrito/finalizar_compra';
                 url = `app/vistas/${file}.php`;
                 break;
@@ -62,6 +76,18 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'login':
                 file = 'usuarios/login';
                 url = `app/vistas/${file}.php`;
+                break;
+            case 'admin_pedidos':
+                file = 'pedidos/admin_lista';
+                url = `app/vistas/${file}.php`;
+                break;
+            case 'detalle_admin':
+                file = 'pedidos/detalle_admin';
+                url = `app/vistas/${file}.php`;
+                break;
+            case 'detalle_pedido':
+                file = 'pedidos/detalle';
+                url = `app/vistas/${file}.php?id=${encodeURIComponent(parametro)}`;
                 break;
             default:
                 return;

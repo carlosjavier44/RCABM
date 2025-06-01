@@ -1,101 +1,54 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+session_start();
 
 require_once __DIR__ . '/../../config/config.php';
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../modelos/Carrito.php';
 
 header('Content-Type: application/json');
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
-
-if (!$data || !isset($data['action'])) {
-    echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
+if (!isset($_SESSION['usuario']['id'])) {
+    echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
     exit;
 }
 
-$action = $data['action'];
+$usuario_id = $_SESSION['usuario']['id'];
+$accion = $_POST['accion'] ?? '';
 
-if (!isset($_SESSION['carrito'])) {
-    $_SESSION['carrito'] = [];
-}
+$carrito = new Carrito($conn);
 
-switch ($action) {
-    case 'add':
-        if (!isset($data['id']) || !is_numeric($data['id'])) {
-            echo json_encode(['success' => false, 'message' => 'ID de producto inválido']);
+switch ($accion) {
+    case 'actualizarCantidad':
+        $producto_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $cantidad = isset($_POST['cantidad']) ? (int)$_POST['cantidad'] : 1;
+        if ($producto_id < 1 || $cantidad < 1) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
             exit;
         }
+        $success = $carrito->actualizarCantidad($usuario_id, $producto_id, $cantidad);
+        echo json_encode(['success' => $success]);
+        break;
 
-        $id = (int) $data['id'];
-
-        $sql = "SELECT * FROM productos WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            echo json_encode(['success' => false, 'message' => 'Error en la consulta']);
+    case 'eliminarProducto':
+        $producto_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        if ($producto_id < 1) {
+            echo json_encode(['success' => false, 'message' => 'ID inválido']);
             exit;
         }
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($producto = $result->fetch_assoc()) {
-            if (isset($_SESSION['carrito'][$id])) {
-                $_SESSION['carrito'][$id]['cantidad']++;
-            } else {
-                $_SESSION['carrito'][$id] = [
-                    'nombre' => $producto['nombre'],
-                    'precio' => (float) $producto['precio'],
-                    'cantidad' => 1,
-                ];
-            }
-            echo json_encode(['success' => true]);
+        $success = $carrito->eliminarProducto($usuario_id, $producto_id);
+        if ($success) {
+            echo json_encode(['success' => true, 'message' => 'Producto eliminado correctamente.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Producto no encontrado']);
+            echo json_encode(['success' => false, 'message' => 'Error al eliminar producto.']);
         }
         break;
 
-    case 'remove':
-        if (!isset($data['id']) || !is_numeric($data['id'])) {
-            echo json_encode(['success' => false, 'message' => 'ID de producto inválido']);
-            exit;
-        }
-        $id = (int) $data['id'];
-        if (isset($_SESSION['carrito'][$id])) {
-            unset($_SESSION['carrito'][$id]);
-            echo json_encode(['success' => true]);
+    case 'vaciarCarrito':
+        $success = $carrito->vaciarCarrito($usuario_id);
+        if ($success) {
+            echo json_encode(['success' => true, 'message' => 'Carrito vaciado correctamente.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Producto no en el carrito']);
+            echo json_encode(['success' => false, 'message' => 'Error al vaciar el carrito.']);
         }
-        break;
-
-    case 'update':
-        if (!isset($data['id'], $data['cantidad']) || !is_numeric($data['id']) || !is_numeric($data['cantidad'])) {
-            echo json_encode(['success' => false, 'message' => 'Datos inválidos para actualización']);
-            exit;
-        }
-        $id = (int) $data['id'];
-        $cantidad = (int) $data['cantidad'];
-        if ($cantidad < 1) {
-            echo json_encode(['success' => false, 'message' => 'Cantidad inválida']);
-            exit;
-        }
-        if (isset($_SESSION['carrito'][$id])) {
-            $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Producto no en el carrito']);
-        }
-        break;
-
-    case 'clear':
-        $_SESSION['carrito'] = [];
-        echo json_encode(['success' => true]);
         break;
 
     default:

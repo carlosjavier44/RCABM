@@ -32,8 +32,13 @@ if (session_status() == PHP_SESSION_NONE) {
 
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><button class="dropdown-item" id="btnPedidos">Pedidos</button></li>
                     <li><button class="dropdown-item" id="btnCarrito">Carrito</button></li>
+                    <li><button class="dropdown-item" id="btnPedidos">Seguimiento Pedidos</button></li>
+                    <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin'): ?>
+                        <a href="index.php?view=admin_pedidos" class="btn btn-sm btn-warning" id="btnAdminPedidos">Gestionar
+                            Pedidos</a>
+                    <?php endif; ?>
+
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -76,13 +81,16 @@ if (session_status() == PHP_SESSION_NONE) {
                         <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button"
                             aria-expanded="false">Categorías</a>
                         <ul class="dropdown-menu" id="desplegable">
-                            <li><a class="dropdown-item" href="#">San Valentín</a></li>
-                            <li><a class="dropdown-item" href="#">Eventos</a></li>
-                            <li><a class="dropdown-item" href="#">Navidad</a></li>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="San Valentín">San
+                                    Valentín</button></li>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Eventos">Eventos</button>
+                            </li>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Navidad">Navidad</button>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" id="btnTodos">Todos</a></li>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="">Todos</button></li>
                         </ul>
                     </li>
                 </div>
