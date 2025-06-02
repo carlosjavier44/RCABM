@@ -37,6 +37,9 @@ if (session_status() == PHP_SESSION_NONE) {
                     <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin'): ?>
                         <a href="index.php?view=admin_pedidos" class="btn btn-sm btn-warning" id="btnAdminPedidos">Gestionar
                             Pedidos</a>
+                        <a href="?view=admin_productos" class="btn btn-sm btn-warning">
+                            Gestionar productos
+                        </a>
                     <?php endif; ?>
 
                     <li>

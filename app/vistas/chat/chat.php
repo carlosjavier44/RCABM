@@ -1,10 +1,11 @@
 <?php
-// app/vistas/chat/chat.php
-session_start();
+
 if (!isset($_SESSION['usuario'])) {
-    header("Location: /login.php");
+    header("Location: /index.php?pagina=login");
+
     exit;
 }
+
 $usuario = $_SESSION['usuario'];
 ?>
 
