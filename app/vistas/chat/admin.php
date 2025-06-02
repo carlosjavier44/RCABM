@@ -1,73 +1,216 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+
+require_once __DIR__ . '/../../../config/config.php';
+
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
+    header("Location: ../usuarios/login.php");
+    exit();
 }
 
-// Definir variable para evitar warnings
-$usuarioSeleccionadoId = isset($_GET['user']) ? (int)$_GET['user'] : null;
+$usuarioSeleccionado = isset($_GET['usuario_id']) ? intval($_GET['usuario_id']) : null;
+$nombreUsuario = null;
+
+if ($usuarioSeleccionado) {
+    // Obtener nombre del usuario seleccionado para mostrar en el título
+    $stmt = $conn->prepare("SELECT nombre FROM usuarios WHERE id = ?");
+    $stmt->bind_param("i", $usuarioSeleccionado);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($fila = $resultado->fetch_assoc()) {
+        $nombreUsuario = $fila['nombre'];
+    } else {
+        $nombreUsuario = "Usuario #$usuarioSeleccionado";
+    }
+    $stmt->close();
+}
 ?>
+<!DOCTYPE html>
+<html lang="es">
 
-<div class="chat-admin-container d-flex">
-    <div class="usuarios-lista border-end pe-3" style="min-width: 250px;">
-        <h4>Usuarios</h4>
-        <ul class="list-group">
-            <?php if (!empty($usuariosConConversacion)): ?>
-                <?php foreach ($usuariosConConversacion as $usuario): ?>
-                    <li class="list-group-item <?= $usuarioSeleccionadoId == $usuario['id'] ? 'active' : '' ?>">
-                        <a href="index.php?view=chat&user=<?= $usuario['id'] ?>" class="text-decoration-none <?= $usuarioSeleccionadoId == $usuario['id'] ? 'text-white' : '' ?>">
-                            <?= htmlspecialchars($usuario['nombre']) ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <li class="list-group-item">No hay conversaciones</li>
-            <?php endif; ?>
-        </ul>
-    </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de Chat - Administrador</title>
+    <link rel="stylesheet" href="/proyecto/public/css/estilos.css" />
+    <style>
+        /* Aquí va todo tu CSS (igual que antes) */
+        .admin-chat-container {
+            display: flex;
+            height: 60vh;
+            border: 1px solid #ccc;
+            margin: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
 
-    <div class="chat-box-container flex-grow-1 ps-3">
-        <h4>Conversación</h4>
-        <div class="chat-box border p-3 mb-3" id="chat-box" style="height: 400px; overflow-y: auto; background-color: #f9f9f9;">
-            <?php if (!empty($mensajes)): ?>
-                <?php foreach ($mensajes as $mensaje): ?>
-                    <div class="mensaje mb-2 <?= $mensaje['emisor_id'] == $_SESSION['usuario']['id'] ? 'text-end' : 'text-start' ?>">
-                        <div class="p-2 d-inline-block <?= $mensaje['emisor_id'] == $_SESSION['usuario']['id'] ? 'bg-primary text-white' : 'bg-light' ?>" style="border-radius: 10px; max-width: 75%;">
-                            <?= htmlspecialchars($mensaje['mensaje']) ?><br>
-                            <small class="text-muted"><?= $mensaje['fecha'] ?></small>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-muted">No hay mensajes aún</p>
-            <?php endif; ?>
+        .lista-usuarios {
+            width: 25%;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+
+        .lista-usuarios div {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .lista-usuarios div div:hover {
+            background-color: #e0e0e0;
+        }
+
+        .chat-mensajes {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        #chat-title {
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background: #fff;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        #chat-box div {
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        #chat-box .Admin {
+            background-color: #d1ffd6;
+            align-self: flex-end;
+            font-weight: bold;
+        }
+
+        #chat-box .Usuario {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+        }
+
+        #form-chat {
+            display: flex;
+        }
+
+        #form-chat input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 4px 0 0 4px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        #form-chat button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+
+        #form-chat button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            font-style: italic;
+        }
+
+        #chat-box {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+
+        .mensaje-chat {
+            max-width: 70%;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 10px;
+            clear: both;
+            word-wrap: break-word;
+        }
+
+        #mensaje{
+            border: solid gray 2px ;
+            border-radius: 25px;
+        }
+
+        .mensaje-chat.usuario {
+            background-color: #e0e0e0;
+            text-align: left;
+            float: left;
+        }
+
+        .mensaje-chat.admin {
+            background-color: #d1ffd6;
+            text-align: right;
+            float: right;
+        }
+
+        .mensaje-chat p {
+            margin: 5px 0;
+        }
+
+        .mensaje-chat small {
+            display: block;
+            font-size: 0.75em;
+            color: #555;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="text-align:center; margin-top: 20px;">Panel de Chat - Administrador</h2>
+
+    <div class="admin-chat-container">
+        <div class="lista-usuarios">
+            <h3>Conversaciones</h3>
+            <div id="conversaciones-list">
+            </div>
         </div>
 
-        <?php if ($usuarioSeleccionadoId): ?>
-            <form method="POST" id="form-chat">
-                <input type="hidden" name="accion" value="enviar">
-                <input type="hidden" name="receptor_id" value="<?= $usuarioSeleccionadoId ?>">
-                <div class="input-group">
-                    <input type="text" name="mensaje" class="form-control" placeholder="Escribe un mensaje..." required>
-                    <button class="btn btn-primary" type="submit">Enviar</button>
-                </div>
-            </form>
-        <?php else: ?>
-            <p class="text-muted">Selecciona un usuario para chatear</p>
-        <?php endif; ?>
-    </div>
-</div>
+        <div class="chat-mensajes">
+            <?php if ($usuarioSeleccionado): ?>
+                <h3 id="chat-title">
+                    <?= htmlspecialchars($nombreUsuario) ?>
+                </h3>
+                <div id="chat-box" class="chat-box"></div>
 
-<script>
-    const form = document.getElementById('form-chat');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const datos = new FormData(form);
-            const resp = await fetch('/app/controladores/controladorChat.php', {
-                method: 'POST',
-                body: datos
-            });
-            if (resp.ok) location.reload();
-        });
-    }
-</script>
+                <form id="formularioChatAdmin" method="post" autocomplete="off">
+                    <input type="hidden" id="usuarioId" name="usuario_id" value="<?= $usuarioSeleccionado ?>">
+                    <input type="text" id="mensaje" name="mensaje" placeholder="Escribe tu mensaje" required />
+                    <button type="submit" class="mensaje">📩</button>
+                </form>
+            <?php else: ?>
+                <p>Selecciona un usuario de la lista para comenzar a chatear.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <script src="/proyecto/public/js/chatAdmin.js"></script>
+</body>
+
+</html>

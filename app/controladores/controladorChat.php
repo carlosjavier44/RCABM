@@ -1,80 +1,59 @@
 <?php
-// app/controladores/controladorChat.php
+session_start();
+require_once __DIR__ . '/../../config/config.php';
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-require_once __DIR__ . '/../modelos/Chat.php';
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+if (!isset($_SESSION['usuario']['id'])) {
+    echo json_encode(['success' => false, 'error' => 'No autenticado']);
+    exit();
 }
 
-header('Content-Type: application/json');
+$usuarioId = $_SESSION['usuario']['id'];
+$adminId = 1;
 
-$chat = new Chat();
+$action = $_GET['action'] ?? ($_POST['action'] ?? '');
 
-$accion = $_POST['accion'] ?? $_GET['accion'] ?? null;
-$usuario = $_SESSION['usuario'] ?? null;
+if ($action === 'obtener_mensajes') {
+    $stmt = $conn->prepare("SELECT m.*, u.nombre AS emisor_nombre FROM mensajes m 
+        JOIN usuarios u ON m.emisor_id = u.id
+        WHERE (emisor_id = ? AND receptor_id = ?) OR (emisor_id = ? AND receptor_id = ?) 
+        ORDER BY fecha ASC");
+    $stmt->bind_param("iiii", $usuarioId, $adminId, $adminId, $usuarioId);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if (!$usuario) {
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
+    $mensajes = [];
+    while ($row = $result->fetch_assoc()) {
+        $mensajes[] = [
+            'id' => $row['id'],
+            'emisor_id' => $row['emisor_id'],
+            'mensaje' => $row['mensaje'],
+            'fecha' => $row['fecha'],
+            'emisor_nombre' => $row['emisor_nombre'],
+        ];
+    }
+
+    echo json_encode($mensajes);
+    exit();
 }
 
-switch ($accion) {
-    case 'enviarMensaje':
-        $mensaje = trim($_POST['mensaje'] ?? '');
-        $receptor_id = intval($_POST['receptor_id'] ?? 0);
-        $emisor_id = $usuario['id'];
+if ($action === 'enviar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $mensaje = trim($_POST['mensaje'] ?? '');
 
-        if (!$mensaje) {
-            echo json_encode(['error' => 'Mensaje vacío']);
-            exit;
-        }
+    if ($mensaje === '') {
+        echo json_encode(['success' => false, 'error' => 'Mensaje vacío']);
+        exit();
+    }
 
-        if ($usuario['rol'] === 'cliente') {
-            // Cliente solo puede enviar al admin (suponemos admin id = 1)
-            $receptor_id = 1;
-        }
-
-        if (!$receptor_id) {
-            echo json_encode(['error' => 'Receptor inválido']);
-            exit;
-        }
-
-        $enviado = $chat->enviarMensaje($emisor_id, $receptor_id, $mensaje);
-        if ($enviado) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['error' => 'Error al guardar mensaje']);
-        }
-        break;
-
-    case 'cargarMensajes':
-        $otro_usuario_id = intval($_GET['otro_usuario_id'] ?? 0);
-        $emisor_id = $usuario['id'];
-
-        if (!$otro_usuario_id) {
-            echo json_encode(['error' => 'Usuario inválido']);
-            exit;
-        }
-
-        $mensajes = $chat->obtenerMensajesEntre($emisor_id, $otro_usuario_id);
-        echo json_encode($mensajes);
-        break;
-
-    case 'usuariosChat':
-        // Sólo para admin: obtener lista de usuarios que han enviado mensajes
-        if ($usuario['rol'] !== 'admin') {
-            echo json_encode(['error' => 'No autorizado']);
-            exit;
-        }
-
-        $usuarios = $chat->obtenerUsuariosConChat();
-        echo json_encode($usuarios);
-        break;
-
-    default:
-        echo json_encode(['error' => 'Acción no válida']);
+    // Insertar mensaje en la tabla mensajes
+    $stmt = $conn->prepare("INSERT INTO mensajes (emisor_id, receptor_id, mensaje, fecha) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iis", $usuarioId, $adminId, $mensaje);
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Error al guardar el mensaje']);
+    }
+    exit();
 }
+
+echo json_encode(['success' => false, 'error' => 'Acción no permitida']);
+exit();

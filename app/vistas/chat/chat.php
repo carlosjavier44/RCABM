@@ -1,203 +1,209 @@
 <?php
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: /index.php?pagina=login");
-
-    exit;
+if (!isset($_SESSION['usuario']['id'])) {
+    header("Location: ../usuarios/login.php");
+    exit();
 }
 
-$usuario = $_SESSION['usuario'];
+$usuarioId = $_SESSION['usuario']['id'];
+$usuarioNombre = $_SESSION['usuario']['nombre'];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
-    <title>Chat</title>
-    <link rel="stylesheet" href="/public/css/estilos.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat con el Administrador</title>
     <style>
-        /* Estilos básicos para chat */
-        #usuarios-lista {
-            width: 25%;
-            float: left;
-            border-right: 1px solid #ccc;
-            height: 500px;
-            overflow-y: auto;
+        /* Contenedor principal centrado y con ancho fijo */
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 15px;
+            font-family: Arial, sans-serif;
         }
-        #chat-ventana {
-            width: 70%;
-            float: left;
-            height: 500px;
-            display: flex;
-            flex-direction: column;
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        #mensajes {
-            flex: 1;
+
+        #chat-box {
+            border: 1px solid #ccc;
+            height: 400px;
             overflow-y: auto;
             padding: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-        #input-mensaje {
-            display: flex;
-        }
-        #input-mensaje input[type=text] {
-            flex: 1;
-            padding: 10px;
-            font-size: 1em;
-        }
-        #input-mensaje button {
-            padding: 10px 20px;
-            font-size: 1em;
-        }
-        .mensaje {
+            background: #fefefe;
             margin-bottom: 10px;
+            border-radius: 5px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
-        .mensaje.emisor {
+
+        .message {
+            margin-bottom: 10px;
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 15px;
+            clear: both;
+            word-wrap: break-word;
+        }
+
+        .my-message {
+            background-color: #d1ffd6;
+            float: right;
             text-align: right;
-            color: blue;
         }
-        .mensaje.receptor {
+
+        .other-message {
+            background-color: #f1f1f1;
+            float: left;
             text-align: left;
-            color: green;
         }
-        .usuario-item {
+
+        .message strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .message small {
+            display: block;
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        form {
+            display: flex;
+            max-width: 100%; /* para que no se salga */
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 4px 0 0 4px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            background-color: #007bff;
+            color: white;
             cursor: pointer;
-            padding: 5px;
-            border-bottom: 1px solid #eee;
+            border-radius: 0 4px 4px 0;
         }
-        .usuario-item.activo {
-            background-color: #ddd;
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
-<body>
-    <h2>Chat</h2>
-    <div style="display: flex;">
-        <?php if ($usuario['rol'] === 'admin'): ?>
-        <div id="usuarios-lista">
-            <h3>Usuarios</h3>
-            <div id="listaUsuarios"></div>
-        </div>
-        <?php endif; ?>
-        <div id="chat-ventana">
-            <div id="mensajes"></div>
-            <div id="input-mensaje">
-                <input type="text" id="mensajeTexto" placeholder="Escribe un mensaje..." autocomplete="off" />
-                <button id="btnEnviar">Enviar</button>
-            </div>
-        </div>
+
+<body data-user-id="<?= $usuarioId ?>">
+
+    <div class="container">
+        <h2>Chat con el Administrador</h2>
+
+        <div id="chat-box"></div>
+
+        <form id="form-chat" autocomplete="off">
+            <input type="text" id="mensaje" name="mensaje" placeholder="Escribe un mensaje..." required />
+            <button type="submit">Enviar</button>
+        </form>
     </div>
 
-<script>
-const usuarioRol = '<?php echo $usuario['rol']; ?>';
-const usuarioId = <?php echo (int)$usuario['id']; ?>;
-
-let receptorId = usuarioRol === 'cliente' ? 1 : null; // admin id = 1 por defecto
-
-const mensajesDiv = document.getElementById('mensajes');
-const listaUsuariosDiv = document.getElementById('listaUsuarios');
-const inputMensaje = document.getElementById('mensajeTexto');
-const btnEnviar = document.getElementById('btnEnviar');
-
-function agregarMensaje(mensaje) {
-    const div = document.createElement('div');
-    div.classList.add('mensaje');
-    if (mensaje.emisor_id == usuarioId) {
-        div.classList.add('emisor');
-        div.textContent = "Tú: " + mensaje.mensaje;
-    } else {
-        div.classList.add('receptor');
-        div.textContent = "Admin: " + mensaje.mensaje;
-    }
-    mensajesDiv.appendChild(div);
-    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-}
-
-function cargarMensajes() {
-    if (!receptorId) return;
-    fetch('/app/controladores/controladorChat.php?accion=cargarMensajes&otro_usuario_id=' + receptorId)
-    .then(res => res.json())
-    .then(data => {
-        mensajesDiv.innerHTML = '';
-        if (data.error) {
-            mensajesDiv.textContent = data.error;
-            return;
-        }
-        data.forEach(mensaje => agregarMensaje(mensaje));
-    });
-}
-
-function enviarMensaje() {
-    const msg = inputMensaje.value.trim();
-    if (!msg) return;
-    let datos = new URLSearchParams();
-    datos.append('accion', 'enviarMensaje');
-    datos.append('mensaje', msg);
-    if (usuarioRol === 'admin') {
-        if (!receptorId) {
-            alert('Selecciona un usuario primero');
-            return;
-        }
-        datos.append('receptor_id', receptorId);
-    }
-    fetch('/app/controladores/controladorChat.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: datos.toString()
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            inputMensaje.value = '';
-            cargarMensajes();
-        } else {
-            alert('Error: ' + (data.error || 'No se pudo enviar'));
-        }
-    })
-    .catch(() => alert('Error en la conexión'));
-}
-
-btnEnviar.addEventListener('click', enviarMensaje);
-inputMensaje.addEventListener('keydown', e => {
-    if (e.key === 'Enter') enviarMensaje();
-});
-
-if (usuarioRol === 'admin') {
-    // Cargar lista de usuarios
-    function cargarUsuarios() {
-        fetch('/app/controladores/controladorChat.php?accion=usuariosChat')
-        .then(res => res.json())
-        .then(data => {
-            listaUsuariosDiv.innerHTML = '';
-            if (data.error) {
-                listaUsuariosDiv.textContent = data.error;
-                return;
+    <script>
+        class ChatApp {
+            constructor(userId) {
+                this.userId = userId;
+                this.chatBox = document.getElementById('chat-box');
+                this.form = document.getElementById('form-chat');
+                this.init();
             }
-            data.forEach(usuario => {
-                const div = document.createElement('div');
-                div.classList.add('usuario-item');
-                div.textContent = usuario.nombre;
-                div.dataset.id = usuario.id;
-                div.addEventListener('click', () => {
-                    receptorId = usuario.id;
-                    document.querySelectorAll('.usuario-item').forEach(el => el.classList.remove('activo'));
-                    div.classList.add('activo');
-                    cargarMensajes();
+
+            init() {
+                this.loadMessages();
+                this.form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    this.sendMessage();
                 });
-                listaUsuariosDiv.appendChild(div);
-            });
+                // Actualizar mensajes cada 3 segundos
+                setInterval(() => this.loadMessages(), 3000);
+            }
+
+            async loadMessages() {
+                try {
+                    const response = await fetch('/proyecto/app/controladores/controladorChat.php?action=obtener_mensajes');
+                    const messages = await response.json();
+
+                    this.chatBox.innerHTML = messages.map(msg => {
+                        const isMe = msg.emisor_id == this.userId;
+                        return `
+        <div class="message ${isMe ? 'my-message' : 'other-message'}">
+            <p>${this.escapeHtml(msg.mensaje)}</p>
+            <small>${new Date(msg.fecha).toLocaleString()}</small>
+        </div>
+    `;
+                    }).join('');
+
+                    this.chatBox.scrollTop = this.chatBox.scrollHeight;
+                } catch (error) {
+                    console.error('Error cargando mensajes:', error);
+                }
+            }
+
+            async sendMessage() {
+                const mensajeInput = this.form.mensaje;
+                const mensaje = mensajeInput.value.trim();
+                if (!mensaje) return;
+
+                const formData = new FormData();
+                formData.append('mensaje', mensaje);
+                formData.append('action', 'enviar');
+
+                try {
+                    const response = await fetch('/proyecto/app/controladores/controladorChat.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        mensajeInput.value = '';
+                        this.loadMessages();
+                    } else {
+                        alert('Error al enviar mensaje: ' + (data.error || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    console.error('Error enviando mensaje:', error);
+                }
+            }
+
+            escapeHtml(text) {
+                if (!text) return '';
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = parseInt(document.body.dataset.userId || '0');
+            if (userId) {
+                new ChatApp(userId);
+            }
         });
-    }
-    cargarUsuarios();
-    // Actualizar mensajes cada 3 segundos
-    setInterval(() => {
-        if (receptorId) cargarMensajes();
-    }, 3000);
-} else {
-    // Cliente solo carga y refresca mensajes con admin (id=1)
-    setInterval(cargarMensajes, 3000);
-    cargarMensajes();
-}
-</script>
+    </script>
+
 </body>
+
 </html>

@@ -45,7 +45,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado ENUM('en espera', 'en proceso', 'en envío') DEFAULT 'en espera',
+    estado ENUM('en espera', 'en proceso', 'en envío', 'completado') DEFAULT 'en espera',
     total DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 )");

@@ -11,6 +11,7 @@ ob_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RCABM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="public/css/estilos.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -41,7 +42,8 @@ ob_start();
             'register' => 'app/vistas/usuarios/register.php',
             'productos' => 'app/vistas/productos/productos.php',
             'carrito' => 'app/vistas/carrito/ver_carrito.php',
-            'chat' => '', // se gestiona aparte por rol
+            'chat' => 'app/vistas/chat/chat.php',
+            'chat_admin' => 'app/vistas/chat/admin.php',
             'pedidos' => 'app/vistas/pedidos/lista.php',
             'detalle' => 'app/vistas/productos/detalle.php',
             'seguimiento' => 'app/vistas/productos/seguimiento.php',

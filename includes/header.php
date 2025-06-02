@@ -17,8 +17,9 @@ if (session_status() == PHP_SESSION_NONE) {
                 <input type="hidden" name="view" value="productos">
                 <input type="text" id="busqueda" name="q" placeholder="Buscar productos..." required>
                 <button id="buscar" type="submit">
-                    <span>Buscar</span>
+                    <i class="fas fa-search"></i> <span>Buscar</span>
                 </button>
+
             </form>
 
             <div class="dropdown">
@@ -79,7 +80,19 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav mx-auto">
                     <button class="nav-link text-dark" id="btnInicio">Inicio</button>
-                    <button class="nav-link text-dark" id="btnChat">Chat</button>
+
+                    <?php
+                    if (isset($_SESSION['usuario']['id'])) {
+                        if ($_SESSION['usuario']['rol'] === 'admin'): ?>
+                            <a href="index.php?view=chat_admin" class="nav-link text-dark">Chats</a>
+                        <?php else: ?>
+                            <a href="index.php?view=chat" class="nav-link text-dark">Chat con admin</a>
+                        <?php endif;
+                    }
+                    ?>
+
+
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button"
                             aria-expanded="false">Categorías</a>

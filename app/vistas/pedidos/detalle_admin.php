@@ -54,7 +54,7 @@ $stmt->close();
 <body>
 <div class="container mt-4">
     <h2>Detalle técnico del Pedido #<?= $pedido_id ?></h2>
-    <a href="index.php?view=pedidos" class="btn btn-secondary mb-3">Volver a lista de pedidos</a>
+    <a href="index.php?view=admin_pedidos" class="btn btn-secondary mb-3">Volver a lista de pedidos</a>
 
     <h4>Datos del usuario</h4>
     <ul>
