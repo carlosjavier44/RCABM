@@ -89,6 +89,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 file = 'pedidos/detalle';
                 url = `app/vistas/${file}.php?id=${encodeURIComponent(parametro)}`;
                 break;
+            case 'admin_productos':
+                file = 'admin/productos';
+                url = `app/vistas/${file}.php`;
+                break;
             default:
                 return;
         }

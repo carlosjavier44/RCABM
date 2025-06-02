@@ -49,6 +49,7 @@ ob_start();
             'detalle_pedido' => 'app/vistas/pedidos/detalle_pedido.php',
             'admin_pedidos' => 'app/vistas/pedidos/admin_pedidos.php',
             'detalle_admin' => 'app/vistas/pedidos/detalle_admin.php',
+            'admin_productos' => 'app/vistas/admin/productos.php',
         ];
 
         if (array_key_exists($view, $valid_views)) {
