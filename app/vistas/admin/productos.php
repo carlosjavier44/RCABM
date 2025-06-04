@@ -129,7 +129,7 @@ $productos = $productoModel->obtenerTodosLosProductos();
                         <?php if ($producto['imagen']): ?>
                             <img src="<?= htmlspecialchars($producto['imagen']) ?>" width="60">
                         <?php else: ?>
-                            <img src="public/img/default-product.png" width="60">
+                            <img src="public/img/default-producto.png" width="60">
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($producto['nombre']) ?></td>
