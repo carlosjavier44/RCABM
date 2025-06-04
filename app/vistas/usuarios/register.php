@@ -11,12 +11,26 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8" />
     <title>Registro de usuario</title>
     <link rel="stylesheet" href="public/css/estilos.css" />
+    <script>
+        // Validación básica en JS para confirmar contraseñas
+        function validarRegistro(event) {
+            const pass1 = document.getElementById("contraseña").value;
+            const pass2 = document.getElementById("confirmar").value;
+
+            if (pass1 !== pass2) {
+                alert("Las contraseñas no coinciden.");
+                event.preventDefault(); // Previene el envío
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 
 <body>
 
     <div class="auth-container">
-        <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST">
+        <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST" onsubmit="return validarRegistro(event)">
             <h2>Registro de usuario</h2>
 
             <?php
@@ -39,7 +53,8 @@ if (session_status() === PHP_SESSION_NONE) {
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required />
             <small>La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo.</small><br /><br />
 
-            <!-- Aceptación de términos -->
+            <input type="password" id="confirmar" name="confirmar_contraseña" placeholder="Confirmar contraseña" required /><br /><br />
+
             <label style="font-size: 0.9em;">
                 <input type="checkbox" name="acepto_politica" required />
                 Acepto la <a href="/RCABM/public/politica.php" target="_blank">Política de Privacidad</a> y los Términos de uso.

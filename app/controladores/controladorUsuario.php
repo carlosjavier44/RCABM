@@ -17,11 +17,21 @@ if (isset($_GET['logout']) && $_GET['logout'] == 1) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     if ($_POST['accion'] === 'register') {
         $nombre = $conn->real_escape_string($_POST["nombre"] ?? '');
         $email = $conn->real_escape_string($_POST["email"] ?? '');
         $contraseña = $_POST["contraseña"] ?? '';
+        $confirmar = $_POST["confirmar_contraseña"] ?? '';
 
+        // Verificar que las contraseñas coincidan
+        if ($contraseña !== $confirmar) {
+            $_SESSION['error_register'] = "Las contraseñas no coinciden.";
+            header('Location: /RCABM/?view=register');
+            exit();
+        }
+
+        // Validación de contraseña
         if (strlen($contraseña) < 8 ||
             !preg_match('/[A-Z]/', $contraseña) ||
             !preg_match('/[0-9]/', $contraseña) ||
@@ -31,8 +41,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
         }
 
-        $hash = password_hash($contraseña, PASSWORD_DEFAULT);
+        // Verificar si el correo ya existe
+        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
 
+        if ($stmt->num_rows > 0) {
+            $_SESSION['error_register'] = "El correo electrónico ya está registrado.";
+            $stmt->close();
+            header('Location: /RCABM/?view=register');
+            exit();
+        }
+        $stmt->close();
+
+        // Insertar nuevo usuario
+        $hash = password_hash($contraseña, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, contraseña) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $nombre, $email, $hash);
 
@@ -40,8 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['registro_exitoso'] = "Registro completado. Ya puedes iniciar sesión.";
             header('Location: /RCABM/?view=login');
         } else {
-            $msg = ($stmt->errno === 1062) ? "El correo ya está registrado." : "Error al registrar usuario.";
-            $_SESSION['error_register'] = $msg;
+            $_SESSION['error_register'] = "Error al registrar usuario.";
             header('Location: /RCABM/?view=register');
         }
 
@@ -66,7 +89,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     'email' => $usuario['email'],
                     'rol' => $usuario['rol']
                 ];
-
                 header('Location: /RCABM/?view=productos');
                 exit();
             } else {
