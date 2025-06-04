@@ -44,7 +44,6 @@ if ($action === 'enviar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Insertar mensaje en la tabla mensajes
     $stmt = $conn->prepare("INSERT INTO mensajes (emisor_id, receptor_id, mensaje, fecha) VALUES (?, ?, ?, NOW())");
     $stmt->bind_param("iis", $usuarioId, $adminId, $mensaje);
     if ($stmt->execute()) {

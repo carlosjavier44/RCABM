@@ -13,7 +13,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $pedido_id = (int)$_GET['id'];
 
-// Obtener info del pedido con datos usuario (nombre, email)
+
 $stmt = $conn->prepare("
     SELECT p.*, u.nombre AS usuario_nombre, u.email 
     FROM pedidos p 
@@ -31,7 +31,7 @@ if (!$pedido) {
     exit;
 }
 
-// Obtener detalles del pedido (productos)
+
 $stmt = $conn->prepare("
     SELECT dp.cantidad, dp.subtotal, pr.nombre 
     FROM detalles_pedido dp

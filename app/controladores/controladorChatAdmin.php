@@ -8,9 +8,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
     exit;
 }
 
-$admin_id = 1; // ID fijo del admin
+$admin_id = 1;
 
-// Listar usuarios con los que el admin ha chateado
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar_usuarios'])) {
     $sql = "SELECT DISTINCT 
                 u.id, u.nombre 
@@ -45,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar_usuarios'])) {
     exit;
 }
 
-// Obtener mensajes de un usuario concreto
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['usuario_id'])) {
     $usuario_id = intval($_GET['usuario_id']);
 
@@ -83,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['usuario_id'])) {
     exit;
 }
 
-// Enviar mensaje del admin a un usuario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mensaje'], $_POST['usuario_id'])) {
     $mensaje = trim($_POST['mensaje']);
     $receptor_id = intval($_POST['usuario_id']);

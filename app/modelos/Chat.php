@@ -6,7 +6,6 @@ class Chat {
         $this->conn = $conexion;
     }
 
-    // Obtener mensajes entre dos usuarios con paginación
     public function obtenerMensajes($usuarioId1, $usuarioId2, $limit = 100, $offset = 0) {
         $stmt = $this->conn->prepare("
             SELECT m.*, u.nombre as emisor_nombre 
@@ -23,17 +22,15 @@ class Chat {
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Enviar mensaje con validación
     public function enviarMensaje($emisorId, $receptorId, $mensaje) {
         if (empty(trim($mensaje))) return false;
         
-        $mensaje = strip_tags($mensaje); // Basic sanitization
+        $mensaje = strip_tags($mensaje);
         $stmt = $this->conn->prepare("INSERT INTO mensajes (emisor_id, receptor_id, mensaje) VALUES (?, ?, ?)");
         $stmt->bind_param("iis", $emisorId, $receptorId, $mensaje);
         return $stmt->execute(); 
     }
 
-    // Obtener conversaciones para el admin
     public function obtenerConversacionesAdmin($adminId = 1) {
         $stmt = $this->conn->prepare("
             SELECT u.id, u.nombre, MAX(m.fecha) as ultima_fecha,
@@ -53,7 +50,6 @@ class Chat {
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Marcar mensajes como leídos
     public function marcarComoLeidos($emisorId, $receptorId) {
         $stmt = $this->conn->prepare("
             UPDATE mensajes SET leido = 1 

@@ -14,7 +14,6 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $pedido_id = (int)$_GET['id'];
 $usuario_id = $_SESSION['usuario']['id'];
 
-// Verificamos que el pedido pertenezca al usuario
 $stmt = $conn->prepare("SELECT * FROM pedidos WHERE id = ? AND usuario_id = ?");
 $stmt->bind_param("ii", $pedido_id, $usuario_id);
 $stmt->execute();
@@ -28,7 +27,6 @@ if ($resultado->num_rows === 0) {
 $pedido = $resultado->fetch_assoc();
 $stmt->close();
 
-// Obtener detalles del pedido
 $stmt = $conn->prepare("
     SELECT dp.*, p.nombre, p.precio 
     FROM detalles_pedido dp

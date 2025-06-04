@@ -13,7 +13,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
 
 $productoModel = new Producto($conn);
 
-// Lógica para agregar/editar
 $editando = false;
 $productoEditado = null;
 
@@ -42,13 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Lógica para cargar un producto a editar
 if (isset($_GET['editar'])) {
     $editando = true;
     $productoEditado = $productoModel->obtenerProductoPorId($_GET['editar']);
 }
 
-// Eliminar producto
 if (isset($_GET['eliminar'])) {
     $productoModel->eliminarProducto($_GET['eliminar']);
     header("Location: index.php?view=admin_productos");

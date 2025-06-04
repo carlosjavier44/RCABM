@@ -11,7 +11,6 @@ $usuarioSeleccionado = isset($_GET['usuario_id']) ? intval($_GET['usuario_id']) 
 $nombreUsuario = null;
 
 if ($usuarioSeleccionado) {
-    // Obtener nombre del usuario seleccionado para mostrar en el título
     $stmt = $conn->prepare("SELECT nombre FROM usuarios WHERE id = ?");
     $stmt->bind_param("i", $usuarioSeleccionado);
     $stmt->execute();
@@ -34,7 +33,6 @@ if ($usuarioSeleccionado) {
     <title>Panel de Chat - Administrador</title>
     <link rel="stylesheet" href="/proyecto/public/css/estilos.css" />
     <style>
-        /* Aquí va todo tu CSS (igual que antes) */
         .admin-chat-container {
             display: flex;
             height: 60vh;

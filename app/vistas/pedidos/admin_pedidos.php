@@ -6,7 +6,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
     exit;
 }
 
-// Si se envió un cambio de estado por POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pedido_id'], $_POST['nuevo_estado'])) {
     $pedido_id = (int) $_POST['pedido_id'];
     $nuevo_estado = $_POST['nuevo_estado'];
@@ -24,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pedido_id'], $_POST['
     }
 }
 
-// Obtener todos los pedidos con info usuario
 $query = "
     SELECT p.*, u.nombre AS usuario_nombre, u.email 
     FROM pedidos p 
@@ -35,7 +33,6 @@ $query = "
 $resultado = $conn->query($query);
 $pedidos = $resultado->fetch_all(MYSQLI_ASSOC);
 
-// Separar pedidos completados y no completados
 $pedidos_no_completados = [];
 $pedidos_completados = [];
 
@@ -67,7 +64,6 @@ foreach ($pedidos as $pedido) {
             </div>
         <?php endif; ?>
 
-        <!-- Pedidos NO completados -->
         <h3>Pedidos en Proceso</h3>
         <?php if (empty($pedidos_no_completados)): ?>
             <p>No hay pedidos en proceso para mostrar.</p>
@@ -131,7 +127,6 @@ foreach ($pedidos as $pedido) {
             </div>
         <?php endif; ?>
 
-        <!-- Pedidos completados -->
         <h3 class="mt-5">Pedidos Completados</h3>
         <?php if (empty($pedidos_completados)): ?>
             <p>No hay pedidos completados para mostrar.</p>

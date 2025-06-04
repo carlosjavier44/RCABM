@@ -11,13 +11,11 @@ if (!isset($_SESSION['usuario'])) {
 
 $usuario_id = $_SESSION['usuario']['id'];
 
-// Datos del formulario (simulados)
 $nombre = $_POST['nombre_titular'] ?? '';
 $numero = $_POST['numero_tarjeta'] ?? '';
 $exp = $_POST['fecha_exp'] ?? '';
 $cvc = $_POST['cvc'] ?? '';
 
-// Validación simple (simulación)
 if (strlen($numero) !== 16 || strlen($cvc) !== 3) {
     $_SESSION['mensaje_error'] = 'Datos de tarjeta inválidos (simulación)';
     header("Location: /index.php?view=carrito");
@@ -33,13 +31,11 @@ if (empty($productos)) {
     exit;
 }
 
-// Calcular total
 $total = 0;
 foreach ($productos as $p) {
     $total += $p['precio'] * $p['cantidad'];
 }
 
-// Insertar en tabla pedidos
 $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total) VALUES (?, ?)");
 $stmt->bind_param("id", $usuario_id, $total);
 if (!$stmt->execute()) {
@@ -50,7 +46,6 @@ if (!$stmt->execute()) {
 $pedido_id = $stmt->insert_id;
 $stmt->close();
 
-// Insertar en tabla detalles_pedido
 $stmt_detalle = $conn->prepare("INSERT INTO detalles_pedido (pedido_id, producto_id, cantidad, subtotal) VALUES (?, ?, ?, ?)");
 foreach ($productos as $p) {
     $subtotal = $p['precio'] * $p['cantidad'];
@@ -59,7 +54,6 @@ foreach ($productos as $p) {
 }
 $stmt_detalle->close();
 
-// Vaciar carrito
 $carrito->vaciarCarrito($usuario_id);
 
 $_SESSION['mensaje_exito'] = "Pago ficticio realizado. Pedido #$pedido_id registrado.";

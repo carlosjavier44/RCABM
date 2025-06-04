@@ -16,7 +16,6 @@ $usuarioNombre = $_SESSION['usuario']['nombre'];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Chat con el Administrador</title>
     <style>
-        /* Contenedor principal centrado y con ancho fijo */
         .container {
             max-width: 800px;
             margin: 30px auto;
@@ -75,7 +74,7 @@ $usuarioNombre = $_SESSION['usuario']['nombre'];
 
         form {
             display: flex;
-            max-width: 100%; /* para que no se salga */
+            max-width: 100%;
             box-sizing: border-box;
         }
 
@@ -132,7 +131,6 @@ $usuarioNombre = $_SESSION['usuario']['nombre'];
                     e.preventDefault();
                     this.sendMessage();
                 });
-                // Actualizar mensajes cada 3 segundos
                 setInterval(() => this.loadMessages(), 3000);
             }
 

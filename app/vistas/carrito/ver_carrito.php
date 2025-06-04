@@ -30,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     if (isset($_POST['finalizar'])) {
-        // Registrar el pedido
         $productos = $carritoObj->obtenerProductos($usuario_id);
         if (!empty($productos)) {
             $total = 0;

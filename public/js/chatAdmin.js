@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatBox = document.getElementById('chat-box');
     const usuarioIdInput = document.getElementById('usuarioId');
 
-    // Cargar la lista de usuarios con los que hay conversación
     function cargarListaUsuarios() {
         fetch('/proyecto/app/controladores/controladorChatAdmin.php?listar_usuarios=1')
         .then(res => res.json())
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Cargar mensajes del usuario seleccionado
     function cargarMensajes() {
         if (!usuarioIdInput) return;
         const usuarioId = usuarioIdInput.value;
@@ -70,9 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatBox.appendChild(div);
             });
             
-            
-
-            // Scroll al final
             chatBox.scrollTop = chatBox.scrollHeight;
         })
         .catch(e => {
@@ -81,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Enviar mensaje
     if (formulario) {
         formulario.addEventListener('submit', e => {
             e.preventDefault();
@@ -110,11 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Inicializar
     if (listaUsuariosDiv) cargarListaUsuarios();
     if (usuarioIdInput) cargarMensajes();
-
-    // Recarga mensajes cada 5 segundos
+    
     if (usuarioIdInput) {
         setInterval(cargarMensajes, 5000);
     }

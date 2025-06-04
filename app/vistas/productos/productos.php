@@ -21,7 +21,6 @@ $productos = $productoModel->obtenerProductos($termino, $categoria, $orden);
 
 <h1 class="mb-4 text-center">Productos disponibles</h1>
 
-<!-- Mensaje que indica qué productos se están mostrando -->
 <div class="mb-3 text-center">
     <?php
     if ($categoria !== '' && $termino !== '') {
@@ -34,7 +33,6 @@ $productos = $productoModel->obtenerProductos($termino, $categoria, $orden);
     ?>
 </div>
 
-<!-- Filtro Categorías -->
 <form method="get" class="mb-3 text-center" id="formCategorias" style="display: inline-block;">
     <input type="hidden" name="view" value="productos">
     <?php if ($termino !== ''): ?>
@@ -47,10 +45,8 @@ $productos = $productoModel->obtenerProductos($termino, $categoria, $orden);
     <?php
     $categorias = ['San Valentín', 'Eventos', 'Navidad'];
     ?>
-    <!-- Aquí puedes añadir botones o inputs para seleccionar la categoría si quieres -->
 </form>
 
-<!-- Selector para ordenar -->
 <form method="get" class="mb-4 text-center">
     <input type="hidden" name="view" value="productos">
     <?php if ($termino !== ''): ?>
