@@ -37,12 +37,13 @@ if (session_status() === PHP_SESSION_NONE) {
             <input type="email" id="email" name="email" placeholder="Correo electrónico" required />
 
             <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required />
-            <small>La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, un número y un
-                símbolo.</small><br /><br />
+            <small>La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo.</small><br /><br />
 
-            <input type="text" id="direccion" name="direccion" placeholder="Dirección" />
-
-            <input type="tel" id="telefono" name="telefono" placeholder="Teléfono" />
+            <!-- Aceptación de términos -->
+            <label style="font-size: 0.9em;">
+                <input type="checkbox" name="acepto_politica" required />
+                Acepto la <a href="/proyecto/public/politica.php" target="_blank">Política de Privacidad</a> y los Términos de uso.
+            </label><br /><br />
 
             <button type="submit">Registrarme</button>
 
