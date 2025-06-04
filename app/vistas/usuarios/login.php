@@ -5,6 +5,14 @@ include __DIR__ . '/../../controladores/controladorUsuario.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+if (isset($_SESSION['registro_exitoso'])) {
+    echo '<center><p style="color:green;">' . htmlspecialchars($_SESSION['registro_exitoso']) . '</p></center>';
+    unset($_SESSION['registro_exitoso']);
+}
+if (isset($_SESSION['error_register'])) {
+    echo '<p style="color:red;">' . htmlspecialchars($_SESSION['error_register']) . '</p>';
+    unset($_SESSION['error_register']);
+}
 ?>
 
 <!DOCTYPE html>
