@@ -136,7 +136,7 @@ $usuarioNombre = $_SESSION['usuario']['nombre'];
 
             async loadMessages() {
                 try {
-                    const response = await fetch('/proyecto/app/controladores/controladorChat.php?action=obtener_mensajes');
+                    const response = await fetch('/RCABM/app/controladores/controladorChat.php?action=obtener_mensajes');
                     const messages = await response.json();
 
                     this.chatBox.innerHTML = messages.map(msg => {
@@ -165,7 +165,7 @@ $usuarioNombre = $_SESSION['usuario']['nombre'];
                 formData.append('action', 'enviar');
 
                 try {
-                    const response = await fetch('/proyecto/app/controladores/controladorChat.php', {
+                    const response = await fetch('/RCABM/app/controladores/controladorChat.php', {
                         method: 'POST',
                         body: formData
                     });

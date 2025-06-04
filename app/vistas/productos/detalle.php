@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir_carrito'], $_
     $carrito = new Carrito($conn);
     $carrito->añadirProducto($usuario_id, $producto_id, 1);
     $_SESSION['mensaje_carrito'] = 'Producto añadido al carrito correctamente';
-    header("Location: /proyecto/index.php?view=detalle&id=" . $producto_id);
+    header("Location: /RCABM/index.php?view=detalle&id=" . $producto_id);
 
     exit;
 }

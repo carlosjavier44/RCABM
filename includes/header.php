@@ -55,7 +55,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <form method="POST" action="/proyecto/app/controladores/controladorUsuario.php"
+                            <form method="POST" action="/RCABM/app/controladores/controladorUsuario.php"
                                 class="text-center">
                                 <input type="hidden" name="accion" value="logout">
                                 <button type="submit" class="dropdown-item text-danger">Salir</button>

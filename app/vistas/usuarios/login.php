@@ -25,7 +25,7 @@ if (isset($_SESSION['error_register'])) {
 <body>
 
 <div class="auth-container">
-    <form class="auth-form" action="/proyecto/app/controladores/controladorUsuario.php" method="POST">
+    <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST">
         <?php
         if (isset($_SESSION['error_login'])) {
             echo '<div class="error">' . htmlspecialchars($_SESSION['error_login']) . '</div>';

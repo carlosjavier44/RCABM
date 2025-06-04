@@ -6,13 +6,13 @@ if (session_status() == PHP_SESSION_NONE) {
 $conn = new mysqli("localhost", "root", "", "mi_tienda");
 if ($conn->connect_error) {
     $_SESSION['error_login'] = "Error de conexión.";
-    header('Location: /proyecto/?view=login');
+    header('Location: /RCABM/?view=login');
     exit();
 }
 
 if (isset($_GET['logout']) && $_GET['logout'] == 1) {
     session_destroy();
-    header('Location: /proyecto/?view=login');
+    header('Location: /RCABM/?view=login');
     exit();
 }
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             !preg_match('/[0-9]/', $contraseña) ||
             !preg_match('/[\W]/', $contraseña)) {
             $_SESSION['error_register'] = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo.";
-            header('Location: /proyecto/?view=register');
+            header('Location: /RCABM/?view=register');
             exit();
         }
 
@@ -38,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if ($stmt->execute()) {
             $_SESSION['registro_exitoso'] = "Registro completado. Ya puedes iniciar sesión.";
-            header('Location: /proyecto/?view=login');
+            header('Location: /RCABM/?view=login');
         } else {
             $msg = ($stmt->errno === 1062) ? "El correo ya está registrado." : "Error al registrar usuario.";
             $_SESSION['error_register'] = $msg;
-            header('Location: /proyecto/?view=register');
+            header('Location: /RCABM/?view=register');
         }
 
         $stmt->close();
@@ -67,16 +67,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     'rol' => $usuario['rol']
                 ];
 
-                header('Location: /proyecto/?view=productos');
+                header('Location: /RCABM/?view=productos');
                 exit();
             } else {
                 $_SESSION['error_login'] = "Email o contraseña incorrectos";
-                header('Location: /proyecto/?view=login');
+                header('Location: /RCABM/?view=login');
                 exit();
             }
         } else {
             $_SESSION['error_login'] = "Email o contraseña incorrectos";
-            header('Location: /proyecto/?view=login');
+            header('Location: /RCABM/?view=login');
             exit();
         }
 
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } elseif ($_POST['accion'] === 'logout') {
         session_destroy();
-        header('Location: /proyecto/?view=login');
+        header('Location: /RCABM/?view=login');
         exit();
     }
 }

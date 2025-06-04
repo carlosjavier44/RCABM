@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <body>
 
     <div class="auth-container">
-        <form class="auth-form" action="/proyecto/app/controladores/controladorUsuario.php" method="POST">
+        <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST">
             <h2>Registro de usuario</h2>
 
             <?php
@@ -42,7 +42,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <!-- Aceptación de términos -->
             <label style="font-size: 0.9em;">
                 <input type="checkbox" name="acepto_politica" required />
-                Acepto la <a href="/proyecto/public/politica.php" target="_blank">Política de Privacidad</a> y los Términos de uso.
+                Acepto la <a href="/RCABM/public/politica.php" target="_blank">Política de Privacidad</a> y los Términos de uso.
             </label><br /><br />
 
             <button type="submit">Registrarme</button>

@@ -31,7 +31,7 @@ if ($usuarioSeleccionado) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Panel de Chat - Administrador</title>
-    <link rel="stylesheet" href="/proyecto/public/css/estilos.css" />
+    <link rel="stylesheet" href="/RCABM/public/css/estilos.css" />
     <style>
         .admin-chat-container {
             display: flex;
@@ -208,7 +208,7 @@ if ($usuarioSeleccionado) {
         </div>
     </div>
 
-    <script src="/proyecto/public/js/chatAdmin.js"></script>
+    <script src="/RCABM/public/js/chatAdmin.js"></script>
 </body>
 
 </html>
