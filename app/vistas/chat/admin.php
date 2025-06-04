@@ -149,8 +149,8 @@ if ($usuarioSeleccionado) {
             word-wrap: break-word;
         }
 
-        #mensaje{
-            border: solid gray 2px ;
+        #mensaje {
+            border: solid gray 2px;
             border-radius: 25px;
         }
 
@@ -175,6 +175,71 @@ if ($usuarioSeleccionado) {
             font-size: 0.75em;
             color: #555;
             margin-top: 4px;
+        }
+
+        /* Responsive para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .admin-chat-container {
+                flex-direction: column;
+                height: auto;
+                margin: 10px;
+            }
+
+            .lista-usuarios {
+                width: 100%;
+                height: 150px;
+                border-right: none;
+                border-bottom: 1px solid #ccc;
+                overflow-x: auto;
+                overflow-y: hidden;
+                white-space: nowrap;
+                padding: 5px;
+                background: #f9f9f9;
+            }
+
+            .lista-usuarios div {
+                display: inline-block;
+                width: auto;
+                min-width: 120px;
+                margin-right: 10px;
+                border-bottom: none;
+                padding: 10px 15px;
+                cursor: pointer;
+            }
+
+            .chat-mensajes {
+                width: 100%;
+                height: auto;
+                flex-grow: 0;
+                padding: 10px 5px;
+            }
+
+            #chat-box {
+                max-height: 300px;
+                font-size: 0.9rem;
+            }
+
+            #form-chat {
+                flex-direction: column;
+            }
+
+            #form-chat input[type="text"] {
+                border-radius: 4px;
+                margin-bottom: 8px;
+                width: 100%;
+            }
+
+            #form-chat button {
+                border-radius: 4px;
+                width: 100%;
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+
+            /* Ajuste para los mensajes para que no se desborden */
+            #chat-box div {
+                max-width: 90% !important;
+            }
         }
     </style>
 </head>

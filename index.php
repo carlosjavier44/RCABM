@@ -19,8 +19,6 @@ ob_start();
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="public/js/scripts.js" defer></script>
-    <script src="public/js/carrito.js" defer></script>
-    <script src="public/js/chat.js" defer></script>
 </head>
 
 <body>
@@ -28,7 +26,8 @@ ob_start();
         <?php include __DIR__ . '/includes/header.php'; ?>
     </header>
 
-    <main id="main" class="container mt-5 mb-5" data-loaded-view="<?= htmlspecialchars(isset($_GET['view']) ? $_GET['view'] : 'productos') ?>">
+    <main id="main" class="container mt-5 mb-5"
+        data-loaded-view="<?= htmlspecialchars(isset($_GET['view']) ? $_GET['view'] : 'productos') ?>">
         <?php
         if (isset($_SESSION['mensaje'])) {
             echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['mensaje']) . '</div>';

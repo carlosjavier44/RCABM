@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const usuarioIdInput = document.getElementById('usuarioId');
 
     function cargarListaUsuarios() {
-        fetch('/proyecto/app/controladores/controladorChatAdmin.php?listar_usuarios=1')
+        fetch('/RCABM/app/controladores/controladorChatAdmin.php?listar_usuarios=1')
         .then(res => res.json())
         .then(data => {
             listaUsuariosDiv.innerHTML = '';
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!usuarioIdInput) return;
         const usuarioId = usuarioIdInput.value;
 
-        fetch(`/proyecto/app/controladores/controladorChatAdmin.php?usuario_id=${usuarioId}`)
+        fetch(`/RCABM/app/controladores/controladorChatAdmin.php?usuario_id=${usuarioId}`)
         .then(res => res.json())
         .then(data => {
             chatBox.innerHTML = '';
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (mensaje === '') return;
 
-            fetch('/proyecto/app/controladores/controladorChatAdmin.php', {
+            fetch('/RCABM/app/controladores/controladorChatAdmin.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `mensaje=${encodeURIComponent(mensaje)}&usuario_id=${usuarioId}`
