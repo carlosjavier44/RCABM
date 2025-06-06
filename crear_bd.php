@@ -131,13 +131,13 @@ $stmt->close();
 
 // Insertar productos
 $productos = [
-    [3, 'Joyero Personalizado', 'Hermoso joyero grabado con el nombre que desees.', 25.99, 10, 'public\\img\\default-product.png', 'San Valentín'],
-    [4, 'Lámpara LED Personalizada', 'Lámpara LED con grabado personalizado.', 34.50, 15, 'public\\img\\default-product.png', 'Navidad'],
-    [5, 'Trompo Personalizado', 'Trompo de madera personalizado.', 12.99, 20, 'public\\img\\default-product.png', 'Eventos'],
-    [6, 'Camiseta Personalizada', 'Camiseta de algodón con estampado personalizado.', 19.99, 30, 'public\\img\\default-product.png', 'Regalo personalizado'],
-    [8, 'Vasos Personalizados', 'Set de vasos con grabado personalizado.', 22.50, 25, 'public\\img\\default-product.png', 'Regalo personalizado'],
-    [10, 'Agenda Personalizada', 'Agenda con diseño personalizado.', 15.99, 50, 'public\\img\\default-product.png', 'Regalo personalizado'],
-    [11, 'Estuche Personalizado', 'Estuche para lapices con diseño personalizado.', 7.99, 75, 'public\\img\\default-product.png', 'Regalo personalizado'],
+    [3, 'Joyero Personalizado', 'Hermoso joyero grabado con el nombre que desees.', 25.99, 10, 'public\\img\\default-producto.png', 'San Valentín'],
+    [4, 'Lámpara LED Personalizada', 'Lámpara LED con grabado personalizado.', 34.50, 15, 'public\\img\\default-producto.png', 'Navidad'],
+    [5, 'Trompo Personalizado', 'Trompo de madera personalizado.', 12.99, 20, 'public\\img\\default-producto.png', 'Eventos'],
+    [6, 'Camiseta Personalizada', 'Camiseta de algodón con estampado personalizado.', 19.99, 30, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [8, 'Vasos Personalizados', 'Set de vasos con grabado personalizado.', 22.50, 25, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [10, 'Agenda Personalizada', 'Agenda con diseño personalizado.', 15.99, 50, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [11, 'Estuche Personalizado', 'Estuche para lapices con diseño personalizado.', 7.99, 75, 'public\\img\\default-producto.png', 'Regalo personalizado'],
 ];
 
 foreach ($productos as $producto) {

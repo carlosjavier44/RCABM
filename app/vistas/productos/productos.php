@@ -75,7 +75,7 @@ $productos = $productoModel->obtenerProductos($termino, $categoria, $orden);
                         <?php if ($producto['imagen']): ?>
                             <img src="<?= htmlspecialchars($producto['imagen']); ?>" class="card-img-top" alt="<?= htmlspecialchars($producto['nombre']); ?>">
                         <?php else: ?>
-                            <img src="public/img/default-product.png" class="card-img-top" alt="Imagen no disponible">
+                            <img src="public/img/default-producto.png" class="card-img-top" alt="Imagen no disponible">
                         <?php endif; ?>
                         <div class="card-body text-center">
                             <h5 class="card-title"><?= htmlspecialchars($producto['nombre']); ?></h5>
