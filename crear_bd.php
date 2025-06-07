@@ -1,10 +1,10 @@
 <?php
 $host = "localhost";
 $usuario = "root";
-$contraseña = "";
+$contrasena = "";
 $nombre_bd = "mi_tienda";
 
-$conn = new mysqli($host, $usuario, $contraseña);
+$conn = new mysqli($host, $usuario, $contrasena);
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
@@ -23,7 +23,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    contraseña VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
     rol ENUM('cliente', 'admin') DEFAULT 'cliente',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
@@ -34,7 +34,6 @@ $conn->query("CREATE TABLE IF NOT EXISTS productos (
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
-    stock INT NOT NULL,
     imagen VARCHAR(255) DEFAULT NULL,
     categoria VARCHAR(100) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -95,7 +94,7 @@ $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
-    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contraseña) VALUES (?, ?, ?, ?)");
+    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contrasena) VALUES (?, ?, ?, ?)");
     $id_usuario = 4;
     $stmt_insert->bind_param("isss", $id_usuario, $nombre, $email, $password);
     $stmt_insert->execute();
@@ -118,7 +117,7 @@ $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
-    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contraseña, rol) VALUES (?, ?, ?, ?, ?)");
+    $stmt_insert = $conn->prepare("INSERT INTO usuarios (id, nombre, email, contrasena, rol) VALUES (?, ?, ?, ?, ?)");
     $id_admin = 1;
     $stmt_insert->bind_param("issss", $id_admin, $nombre, $email, $password, $rol);
     $stmt_insert->execute();
@@ -131,17 +130,17 @@ $stmt->close();
 
 // Insertar productos
 $productos = [
-    [3, 'Joyero Personalizado', 'Hermoso joyero grabado con el nombre que desees.', 25.99, 10, 'public\\img\\default-producto.png', 'San Valentín'],
-    [4, 'Lámpara LED Personalizada', 'Lámpara LED con grabado personalizado.', 34.50, 15, 'public\\img\\default-producto.png', 'Navidad'],
-    [5, 'Trompo Personalizado', 'Trompo de madera personalizado.', 12.99, 20, 'public\\img\\default-producto.png', 'Eventos'],
-    [6, 'Camiseta Personalizada', 'Camiseta de algodón con estampado personalizado.', 19.99, 30, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [8, 'Vasos Personalizados', 'Set de vasos con grabado personalizado.', 22.50, 25, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [10, 'Agenda Personalizada', 'Agenda con diseño personalizado.', 15.99, 50, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [11, 'Estuche Personalizado', 'Estuche para lapices con diseño personalizado.', 7.99, 75, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [3, 'Joyero Personalizado', 'Hermoso joyero grabado con el nombre que desees.', 25.99, 'public\\img\\default-producto.png', 'San Valentín'],
+    [4, 'Lámpara LED Personalizada', 'Lámpara LED con grabado personalizado.', 34.50,  'public\\img\\default-producto.png', 'Navidad'],
+    [5, 'Trompo Personalizado', 'Trompo de madera personalizado.', 12.99, 'public\\img\\default-producto.png', 'Eventos'],
+    [6, 'Camiseta Personalizada', 'Camiseta de algodón con estampado personalizado.', 19.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [8, 'Vasos Personalizados', 'Set de vasos con grabado personalizado.', 22.50, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [10, 'Agenda Personalizada', 'Agenda con diseño personalizado.', 15.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [11, 'Estuche Personalizado', 'Estuche para lapices con diseño personalizado.', 7.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
 ];
 
 foreach ($productos as $producto) {
-    [$id, $nombre, $descripcion, $precio, $stock, $imagen, $categoria] = $producto;
+    [$id, $nombre, $descripcion, $precio, $imagen, $categoria] = $producto;
 
     $stmt_check = $conn->prepare("SELECT id FROM productos WHERE id = ?");
     $stmt_check->bind_param("i", $id);
@@ -149,8 +148,8 @@ foreach ($productos as $producto) {
     $stmt_check->store_result();
 
     if ($stmt_check->num_rows === 0) {
-        $stmt_insert = $conn->prepare("INSERT INTO productos (id, nombre, descripcion, precio, stock, imagen, categoria) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt_insert->bind_param("issdiss", $id, $nombre, $descripcion, $precio, $stock, $imagen, $categoria);
+        $stmt_insert = $conn->prepare("INSERT INTO productos (id, nombre, descripcion, precio, imagen, categoria) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt_insert->bind_param("issdss", $id, $nombre, $descripcion, $precio, $imagen, $categoria);
         $stmt_insert->execute();
         echo "Producto '$nombre' insertado.<br>";
         $stmt_insert->close();

@@ -69,22 +69,22 @@ class Producto {
         return $resultado->fetch_assoc();
     }
 
-    public function agregarProducto($nombre, $descripcion, $precio, $categoria, $stock, $imagen) {
-        $sql = "INSERT INTO productos (nombre, descripcion, precio, categoria, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)";
+    public function agregarProducto($nombre, $descripcion, $precio, $categoria, $imagen) {
+        $sql = "INSERT INTO productos (nombre, descripcion, precio, categoria, imagen) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('ssdsss', $nombre, $descripcion, $precio, $categoria, $stock, $imagen);
+        $stmt->bind_param('ssdss', $nombre, $descripcion, $precio, $categoria, $imagen);
         return $stmt->execute();
     }
 
-    public function actualizarProducto($id, $nombre, $descripcion, $precio, $categoria, $stock, $imagen = '') {
+    public function actualizarProducto($id, $nombre, $descripcion, $precio, $categoria, $imagen = '') {
         if (!empty($imagen)) {
-            $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria = ?, stock = ?, imagen = ? WHERE id = ?";
+            $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria = ?, imagen = ? WHERE id = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param('ssdsssi', $nombre, $descripcion, $precio, $categoria, $stock, $imagen, $id);
+            $stmt->bind_param('ssdssi', $nombre, $descripcion, $precio, $categoria, $imagen, $id);
         } else {
-            $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria = ?, stock = ? WHERE id = ?";
+            $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria  = ? WHERE id = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param('ssdssi', $nombre, $descripcion, $precio, $categoria, $stock, $id);
+            $stmt->bind_param('ssdsi', $nombre, $descripcion, $precio, $categoria, $id);
         }
         return $stmt->execute();
     }

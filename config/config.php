@@ -4,10 +4,10 @@ define('BASE_URL', '/RCABM');
 
 $host = "localhost";
 $usuario = "root";
-$contraseña = "";
+$contrasena = "";
 $nombre_bd = "mi_tienda";
 
-$conn = new mysqli($host, $usuario, $contraseña, $nombre_bd);
+$conn = new mysqli($host, $usuario, $contrasena, $nombre_bd);
 
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);

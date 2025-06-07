@@ -41,7 +41,6 @@ if ($producto = $result->fetch_assoc()):
             <p class="text-muted"><?= htmlspecialchars($producto['categoria']) ?></p>
             <h3 class="text-primary"><?= number_format($producto['precio'], 2, ',', '.') ?> €</h3>
             <p><?= htmlspecialchars($producto['descripcion']) ?></p>
-            <p><strong>Stock disponible:</strong> <?= $producto['stock'] ?></p>
 
             <?php if (isset($_SESSION['usuario'])): ?>
                 <form method="post" action="">

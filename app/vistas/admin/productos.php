@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = trim($_POST['descripcion']);
     $precio = floatval($_POST['precio']);
     $categoria = trim($_POST['categoria']);
-    $stock = intval($_POST['stock']);
     $imagen = '';
 
     if (!empty($_FILES['imagen']['name'])) {
@@ -33,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($id) {
-        $productoModel->actualizarProducto($id, $nombre, $descripcion, $precio, $categoria, $stock, $imagen);
+        $productoModel->actualizarProducto($id, $nombre, $descripcion, $precio, $categoria, $imagen);
     } else {
-        $productoModel->agregarProducto($nombre, $descripcion, $precio, $categoria, $stock, $imagen);
+        $productoModel->agregarProducto($nombre, $descripcion, $precio, $categoria, $imagen);
     }
     header("Location: index.php?view=admin_productos");
     exit;
@@ -83,11 +82,6 @@ $productos = $productoModel->obtenerTodosLosProductos();
     </div>
 
     <div class="mb-3">
-        <label for="stock" class="form-label">Stock:</label>
-        <input type="number" name="stock" id="stock" class="form-control" required value="<?= $editando ? $productoEditado['stock'] : '' ?>">
-    </div>
-
-    <div class="mb-3">
         <label for="imagen" class="form-label">Imagen:</label>
         <input type="file" name="imagen" id="imagen" class="form-control">
         <?php if ($editando && $productoEditado['imagen']): ?>
@@ -118,7 +112,6 @@ $productos = $productoModel->obtenerTodosLosProductos();
                 <th>Descripción</th>
                 <th>Precio (€)</th>
                 <th>Categoría</th>
-                <th>Stock</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -136,7 +129,6 @@ $productos = $productoModel->obtenerTodosLosProductos();
                     <td><?= htmlspecialchars($producto['descripcion']) ?></td>
                     <td><?= number_format($producto['precio'], 2, ',', '.') ?></td>
                     <td><?= htmlspecialchars($producto['categoria']) ?></td>
-                    <td><?= $producto['stock'] ?></td>
                     <td>
                         <a href="index.php?view=admin_productos&editar=<?= $producto['id'] ?>" class="btn btn-sm btn-warning">Editar</a>
                         <a href="index.php?view=admin_productos&eliminar=<?= $producto['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que deseas eliminar este producto?')">Eliminar</a>
