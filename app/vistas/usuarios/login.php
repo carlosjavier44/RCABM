@@ -37,7 +37,7 @@ if (isset($_SESSION['error_register'])) {
         <input type="hidden" name="accion" value="login" />
 
         <input type="email" name="email" placeholder="Correo electrónico" required />
-        <input type="password" name="contraseña" placeholder="Contraseña" required />
+        <input type="password" name="contrasena" placeholder="Contraseña" required />
 
         <button type="submit">Entrar</button>
 

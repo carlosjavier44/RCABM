@@ -14,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script>
         // Validación básica en JS para confirmar contraseñas
         function validarRegistro(event) {
-            const pass1 = document.getElementById("contraseña").value;
+            const pass1 = document.getElementById("contrasena").value;
             const pass2 = document.getElementById("confirmar").value;
 
             if (pass1 !== pass2) {
@@ -50,10 +50,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
             <input type="email" id="email" name="email" placeholder="Correo electrónico" required />
 
-            <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña" required />
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required />
             <small>La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo.</small><br /><br />
 
-            <input type="password" id="confirmar" name="confirmar_contraseña" placeholder="Confirmar contraseña" required /><br /><br />
+            <input type="password" id="confirmar" name="confirmar_contrasena" placeholder="Confirmar contraseña" required /><br /><br />
 
             <label style="font-size: 0.9em;">
                 <input type="checkbox" name="acepto_politica" required />

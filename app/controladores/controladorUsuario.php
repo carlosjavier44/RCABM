@@ -21,21 +21,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($_POST['accion'] === 'register') {
         $nombre = $conn->real_escape_string($_POST["nombre"] ?? '');
         $email = $conn->real_escape_string($_POST["email"] ?? '');
-        $contraseña = $_POST["contraseña"] ?? '';
-        $confirmar = $_POST["confirmar_contraseña"] ?? '';
+        $contrasena = $_POST["contrasena"] ?? '';
+        $confirmar = $_POST["confirmar_contrasena"] ?? '';
 
         // Verificar que las contraseñas coincidan
-        if ($contraseña !== $confirmar) {
+        if ($contrasena !== $confirmar) {
             $_SESSION['error_register'] = "Las contraseñas no coinciden.";
             header('Location: /RCABM/?view=register');
             exit();
         }
 
         // Validación de contraseña
-        if (strlen($contraseña) < 8 ||
-            !preg_match('/[A-Z]/', $contraseña) ||
-            !preg_match('/[0-9]/', $contraseña) ||
-            !preg_match('/[\W]/', $contraseña)) {
+        if (strlen($contrasena) < 8 ||
+            !preg_match('/[A-Z]/', $contrasena) ||
+            !preg_match('/[0-9]/', $contrasena) ||
+            !preg_match('/[\W]/', $contrasena)) {
             $_SESSION['error_register'] = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo.";
             header('Location: /RCABM/?view=register');
             exit();
@@ -56,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
 
         // Insertar nuevo usuario
-        $hash = password_hash($contraseña, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, contraseña) VALUES (?, ?, ?)");
+        $hash = password_hash($contrasena, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, contrasena) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $nombre, $email, $hash);
 
         if ($stmt->execute()) {
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } elseif ($_POST['accion'] === 'login') {
         $email = $conn->real_escape_string($_POST["email"] ?? '');
-        $contraseña = $_POST["contraseña"] ?? '';
+        $contrasena = $_POST["contrasena"] ?? '';
 
         $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $resultado = $stmt->get_result();
 
         if ($usuario = $resultado->fetch_assoc()) {
-            if (password_verify($contraseña, $usuario['contraseña'])) {
+            if (password_verify($contrasena, $usuario['contrasena'])) {
                 $_SESSION['usuario'] = [
                     'id' => $usuario['id'],
                     'nombre' => $usuario['nombre'],

@@ -130,14 +130,31 @@ $stmt->close();
 
 // Insertar productos
 $productos = [
-    [3, 'Joyero Personalizado', 'Hermoso joyero grabado con el nombre que desees.', 25.99, 'public\\img\\default-producto.png', 'San Valentín'],
-    [4, 'Lámpara LED Personalizada', 'Lámpara LED con grabado personalizado.', 34.50,  'public\\img\\default-producto.png', 'Navidad'],
-    [5, 'Trompo Personalizado', 'Trompo de madera personalizado.', 12.99, 'public\\img\\default-producto.png', 'Eventos'],
-    [6, 'Camiseta Personalizada', 'Camiseta de algodón con estampado personalizado.', 19.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [8, 'Vasos Personalizados', 'Set de vasos con grabado personalizado.', 22.50, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [10, 'Agenda Personalizada', 'Agenda con diseño personalizado.', 15.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
-    [11, 'Estuche Personalizado', 'Estuche para lapices con diseño personalizado.', 7.99, 'public\\img\\default-producto.png', 'Regalo personalizado'],
+    [1, 'Abridor Personalizado', 'Abridor con puño de madera personalizado.', 9.99, 'public\\img\\abridor.jpg', 'Unisex'],
+    [2, 'Abridor de Bambú', 'Abridor de bambú personalizado para tu evento.', 8.99, 'public\\img\\abridor_bambu.jpg', 'Eventos'],
+    [3, 'Bandeja Papá Noel', 'Bandeja papá Noel y vaso personalizada.', 16.50, 'public\\img\\bandeja_papa_noel.jpg', 'Navidad'],
+    [4, 'Bandeja Reyes Magos', 'Bandeja reyes magos con tres vasos personalizada.', 18.99, 'public\\img\\bandeja_reyes_magos.jpg', 'Navidad'],
+    [5, 'Bola para Árbol', 'Bola personalizada para árbol de navidad.', 6.99, 'public\\img\\bola_arbol.jpg', 'Navidad'],
+    [6, 'Bolígrafo 8 Colores', 'Bolígrafo 8 colores personalizado con nombre y temática.', 4.50, 'public\\img\\boligrafo.jpg', 'Niños'],
+    // [7, 'Botella San Valentín', 'Botella personalizada San Valentín Mickey.', 11.99, 'public\\img\\botella_san_valentin.jpg', 'San Valentín'],
+    // [8, 'Calcetín de Navidad', 'Calcetín árbol de navidad personalizado.', 7.99, 'public\\img\\calcetin_arbol.jpg', 'Navidad'],
+    // [9, 'Caja Natalicio', 'Caja natalicio, un regalo ideal para un recién nacido.', 19.50, 'public\\img\\caja_natalicio.jpg', 'Bebés'],
+    [10, 'Comba Personalizada', 'Combas personalizadas con puños de madera.', 5.99, 'public\\img\\comba.jpg', 'Niños'],
+    [11, 'Elefante Natalicio', 'Elefante natalicio, tres colores disponibles.', 13.99, 'public\\img\\elefante_natalicio.jpg', 'Bebés'],
+    [12, 'Lámpara Fútbol', 'Lámpara balón de fútbol personalizada y control remoto o táctil, carga USB cable incluido.', 24.99, 'public\\img\\lampara_futbol.jpg', 'Lámparas'],
+    [13, 'Joyero Pequeño', 'Joyeros personalizados 10*10*5 cm.', 14.50, 'public\\img\\joyero_pequeño.jpg', 'Mujer'],
+    [14, 'Lámpara Spiderman', 'Lámpara Spiderman personalizada. 16 colores, control mando a distancia y táctil.', 26.99, 'public\\img\\lampara_spideman.jpg', 'Lámparas'],
+    [15, 'Lámpara Stich', 'Lámpara Stich 16 colores, con control remoto y táctil.', 26.99, 'public\\img\\lampara_stich.jpg', 'Lámparas'],
+    [16, 'Llavero Polipiel', 'Llaveros de polipiel personalizados con nombre e inicial.', 6.99, 'public\\img\\llavero_polipiel.jpg', 'Unisex'],
+    [17, 'Neceser Hombre', 'Neceser personalizado con nombre e inicial.', 12.99, 'public\\img\\neceser_hombre.jpg', 'Hombre'],
+    [18,'Pulsera Perlas Inicial', 'Pulsera de perlas con inicial y tarjetón con el diseño que más te guste.', 9.50, 'public\\img\\pulsera_perlas_inicial.jpg', 'Eventos'],
+    [19, 'Neceser Mujer', 'Neceser personalizado, de fieltro reciclado.', 11.50, 'public\\img\\neceser_mujer.jpg', 'Mujer'],
+    // [20, 'Taza San Valentín', 'San Valentín. Taza personalizada.', 8.99, 'public\\img\\taza_san_valentin.jpg', 'San Valentín'],
+    [21, 'Tres en Raya', 'Juego de tres en raya personalizado.', 10.99, 'public\\img\\tres_en_raya.jpg', 'Niños'],
+    [22, 'Trompos de Colores', 'Trompos de madera en varios colores, personalizados con el nombre de cada niño.', 5.99, 'public\\img\\trompos.jpg', 'Niños'],
+    [23, 'Vasos 250ml', 'Vasos de 250 ml personalizados a tu gusto, en colores vivos.', 4.99, 'public\\img\\vasos_250.jpg', 'Niños'],
 ];
+
 
 foreach ($productos as $producto) {
     [$id, $nombre, $descripcion, $precio, $imagen, $categoria] = $producto;

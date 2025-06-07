@@ -97,12 +97,18 @@ if (session_status() == PHP_SESSION_NONE) {
                         <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button"
                             aria-expanded="false">Categorías</a>
                         <ul class="dropdown-menu" id="desplegable">
-                            <li><button class="dropdown-item btn-categoria" data-categoria="San Valentín">San
+                            <li><button class="dropdown-item btn-categoria" data-categoria="San Valentin">San
                                     Valentín</button></li>
                             <li><button class="dropdown-item btn-categoria" data-categoria="Eventos">Eventos</button>
                             </li>
                             <li><button class="dropdown-item btn-categoria" data-categoria="Navidad">Navidad</button>
                             </li>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Bebés">Bebés</button>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Niños">Niño</button>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Hombre">Hombre</button>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Mujer">Mujer</button>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Unisex">Unisex</button>
+                            <li><button class="dropdown-item btn-categoria" data-categoria="Lámparas">Lámparas</button>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
