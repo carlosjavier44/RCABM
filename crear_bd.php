@@ -77,6 +77,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS mensajes (
     receptor_id INT NOT NULL,
     mensaje TEXT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    leido TINYINT(1) DEFAULT 0,
     FOREIGN KEY (emisor_id) REFERENCES usuarios(id),
     FOREIGN KEY (receptor_id) REFERENCES usuarios(id)
 )");

@@ -13,6 +13,12 @@ $adminId = 1;
 $action = $_GET['action'] ?? ($_POST['action'] ?? '');
 
 if ($action === 'obtener_mensajes') {
+    // Marcar como leídos los mensajes enviados por el admin a este usuario
+    $stmt = $conn->prepare("UPDATE mensajes SET leido = 1 WHERE emisor_id = ? AND receptor_id = ?");
+    $stmt->bind_param("ii", $adminId, $usuarioId);
+    $stmt->execute();
+
+    // Obtener todos los mensajes de la conversación
     $stmt = $conn->prepare("SELECT m.*, u.nombre AS emisor_nombre FROM mensajes m 
         JOIN usuarios u ON m.emisor_id = u.id
         WHERE (emisor_id = ? AND receptor_id = ?) OR (emisor_id = ? AND receptor_id = ?) 
