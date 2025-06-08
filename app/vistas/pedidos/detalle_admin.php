@@ -33,7 +33,7 @@ if (!$pedido) {
 
 
 $stmt = $conn->prepare("
-    SELECT dp.cantidad, dp.subtotal, pr.nombre 
+    SELECT dp.cantidad, dp.subtotal, dp.observaciones, pr.nombre 
     FROM detalles_pedido dp
     JOIN productos pr ON dp.producto_id = pr.id
     WHERE dp.pedido_id = ?
@@ -79,6 +79,7 @@ $stmt->close();
                     <th>Nombre producto</th>
                     <th>Cantidad</th>
                     <th>Subtotal</th>
+                    <th>Observaciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -87,6 +88,7 @@ $stmt->close();
                         <td><?= htmlspecialchars($producto['nombre']) ?></td>
                         <td><?= $producto['cantidad'] ?></td>
                         <td><?= number_format($producto['subtotal'], 2, ',', '.') ?> €</td>
+                        <td><?= $producto['observaciones'] ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

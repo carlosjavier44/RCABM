@@ -56,6 +56,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS detalles_pedido (
     producto_id INT NOT NULL,
     cantidad INT NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
+    observaciones VARCHAR(255),
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 )");

@@ -61,6 +61,7 @@ $stmt->close();
                 <th>Precio</th>
                 <th>Cantidad</th>
                 <th>Subtotal</th>
+                <th>Observaciones</th>
             </tr>
         </thead>
         <tbody>
@@ -70,6 +71,7 @@ $stmt->close();
                     <td><?= number_format($item['precio'], 2, ',', '.') ?> €</td>
                     <td><?= $item['cantidad'] ?></td>
                     <td><?= number_format($item['subtotal'], 2, ',', '.') ?> €</td>
+                    <td><?= $item['observaciones'] ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
