@@ -28,7 +28,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <?php
                     $fotoPerfil = isset($_SESSION['usuario']) ? 'userOn.png' : 'userOff.png';
                     ?>
-                    <img src="public/img/<?= $fotoPerfil ?>" alt="Perfil" id="fotoPerfil" class="rounded-circle"
+                    <img src="public/img/<?= $fotoPerfil ?>" alt="Perfil" id="fotoPerfil" class="rounded-circle ms-3"
                         style="width:75px; height: 75px;">
 
                 </button>

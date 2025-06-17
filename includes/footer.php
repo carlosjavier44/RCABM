@@ -14,9 +14,9 @@
         <div class="col-2 ms-5">
             <h6>Redes sociales</h6>
             <ul class="list-unstyled">
-                <li><a class="nav-link text-dark" href="https://www.instagram.com/regalosconamor_bymoni/">Instagram</a></li>
-                <li><a class="nav-link text-dark" href="https://www.tiktok.com/@regalosconamor_by">TikTok</a></li>
-                <li><a class="nav-link text-dark" href="https://www.facebook.com/p/Regalos-con-amor-by-Moni-61555788985610/">Facebook</a></li>
+                <li><a class="nav-link text-dark" href="https://www.instagram.com/regalosconamor_bymoni/" target="_blank">Instagram</a></li>
+                <li><a class="nav-link text-dark" href="https://www.tiktok.com/@regalosconamor_by" target="_blank">TikTok</a></li>
+                <li><a class="nav-link text-dark" href="https://www.facebook.com/p/Regalos-con-amor-by-Moni-61555788985610/" target="_blank">Facebook</a></li>
             </ul>
         </div>
     </div>
