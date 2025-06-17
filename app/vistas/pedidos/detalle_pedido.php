@@ -11,7 +11,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 
-$pedido_id = (int)$_GET['id'];
+$pedido_id = (int) $_GET['id'];
 $usuario_id = $_SESSION['usuario']['id'];
 
 $stmt = $conn->prepare("SELECT * FROM pedidos WHERE id = ? AND usuario_id = ?");
@@ -41,43 +41,61 @@ $stmt->close();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Detalle del Pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
+
 <body>
-<div class="container mt-4">
-    <h2>Pedido #<?= $pedido['id'] ?></h2>
-    <p><strong>Fecha:</strong> <?= $pedido['fecha'] ?></p>
-    <p><strong>Estado:</strong> <?= ucfirst($pedido['estado']) ?></p>
-    <p><strong>Total:</strong> <?= number_format($pedido['total'], 2, ',', '.') ?> €</p>
+    <div class="container mt-4">
+        <h2>Pedido #
+            <?= $pedido['id'] ?>
+        </h2>
+        <p><strong>Fecha:</strong> <?= $pedido['fecha'] ?>
+        </p>
+        <p><strong>Estado:</strong> <?= ucfirst($pedido['estado']) ?>
+        </p>
+        <p><strong>Total:</strong> <?= number_format($pedido['total'], 2, ',', '.') ?> €</p>
 
-    <h4>Productos</h4>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($detalles as $item): ?>
-                <tr>
-                    <td><?= htmlspecialchars($item['nombre']) ?></td>
-                    <td><?= number_format($item['precio'], 2, ',', '.') ?> €</td>
-                    <td><?= $item['cantidad'] ?></td>
-                    <td><?= number_format($item['subtotal'], 2, ',', '.') ?> €</td>
-                    <td><?= $item['observaciones'] ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <a href="index.php?view=pedidos" class="btn btn-secondary">Volver</a>
-</div>
+        <h4>Productos</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($detalles as $item): ?>
+                        <tr>
+                            <td>
+                                <?= htmlspecialchars($item['nombre']) ?>
+                            </td>
+                            <td>
+                                <?= number_format($item['precio'], 2, ',', '.') ?> €
+                            </td>
+                            <td>
+                                <?= $item['cantidad'] ?>
+                            </td>
+                            <td>
+                                <?= number_format($item['subtotal'], 2, ',', '.') ?> €
+                            </td>
+                            <td>
+                                <?= $item['observaciones'] ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <a href="index.php?view=pedidos" class="btn btn-secondary">Volver</a>
+    </div>
 </body>
+
 </html>

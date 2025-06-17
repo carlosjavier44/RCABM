@@ -11,7 +11,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 
-$pedido_id = (int)$_GET['id'];
+$pedido_id = (int) $_GET['id'];
 
 
 $stmt = $conn->prepare("
@@ -46,54 +46,75 @@ $stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
-    <title>Detalle técnico del Pedido #<?= $pedido_id ?></title>
+    <title>Detalle técnico del Pedido #
+        <?= $pedido_id ?>
+    </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
+
 <body>
-<div class="container mt-4">
-    <h2>Detalle técnico del Pedido #<?= $pedido_id ?></h2>
-    <a href="index.php?view=admin_pedidos" class="btn btn-secondary mb-3">Volver a lista de pedidos</a>
+    <div class="container mt-4">
+        <h2>Detalle técnico del Pedido #
+            <?= $pedido_id ?>
+        </h2>
+        <a href="index.php?view=admin_pedidos" class="btn btn-secondary mb-3">Volver a lista de pedidos</a>
 
-    <h4>Datos del usuario</h4>
-    <ul>
-        <li><strong>Nombre:</strong> <?= htmlspecialchars($pedido['usuario_nombre']) ?></li>
-        <li><strong>Email:</strong> <?= htmlspecialchars($pedido['email']) ?></li>
-    </ul>
+        <h4>Datos del usuario</h4>
+        <ul>
+            <li><strong>Nombre:</strong> <?= htmlspecialchars($pedido['usuario_nombre']) ?>
+            </li>
+            <li><strong>Email:</strong> <?= htmlspecialchars($pedido['email']) ?>
+            </li>
+        </ul>
 
-    <h4>Datos del pedido</h4>
-    <ul>
-        <li><strong>Fecha:</strong> <?= $pedido['fecha'] ?></li>
-        <li><strong>Estado:</strong> <?= ucfirst($pedido['estado']) ?></li>
-        <li><strong>Total:</strong> <?= number_format($pedido['total'], 2, ',', '.') ?> €</li>
-    </ul>
+        <h4>Datos del pedido</h4>
+        <ul>
+            <li><strong>Fecha:</strong> <?= $pedido['fecha'] ?>
+            </li>
+            <li><strong>Estado:</strong> <?= ucfirst($pedido['estado']) ?>
+            </li>
+            <li><strong>Total:</strong> <?= number_format($pedido['total'], 2, ',', '.') ?> €</li>
+        </ul>
 
-    <h4>Productos del pedido</h4>
-    <?php if (empty($detalle_productos)): ?>
-        <p>Este pedido no tiene productos.</p>
-    <?php else: ?>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Nombre producto</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($detalle_productos as $producto): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($producto['nombre']) ?></td>
-                        <td><?= $producto['cantidad'] ?></td>
-                        <td><?= number_format($producto['subtotal'], 2, ',', '.') ?> €</td>
-                        <td><?= $producto['observaciones'] ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-</div>
+        <h4>Productos del pedido</h4>
+        <?php if (empty($detalle_productos)): ?>
+            <p>Este pedido no tiene productos.</p>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre producto</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($detalle_productos as $producto): ?>
+                            <tr>
+                                <td>
+                                    <?= htmlspecialchars($producto['nombre']) ?>
+                                </td>
+                                <td>
+                                    <?= $producto['cantidad'] ?>
+                                </td>
+                                <td>
+                                    <?= number_format($producto['subtotal'], 2, ',', '.') ?> €
+                                </td>
+                                <td>
+                                    <?= $producto['observaciones'] ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>
 </body>
+
 </html>
