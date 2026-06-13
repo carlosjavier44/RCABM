@@ -86,9 +86,9 @@ $conn->query("CREATE TABLE IF NOT EXISTS mensajes (
 echo "Tablas creadas correctamente.<br>";
 
 // Insertar usuario de prueba Carlos
-$email = 'a@gmail.com';
+$email = 'prueba@gmail.com';
 $password = password_hash('Carloscajar4@', PASSWORD_DEFAULT);
-$nombre = 'Carlos';
+$nombre = 'Prueba';
 
 $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
 $stmt->bind_param("s", $email);
