@@ -25,7 +25,7 @@
 
       <div class="form-group">
         <label class="form-label" for="password">Contraseña</label>
-        <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+        <input class="form-input" type="password" id="contrasena" name="contrasena" placeholder="Mínimo 6 caracteres" required minlength="6">
       </div>
 
       <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
