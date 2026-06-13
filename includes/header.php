@@ -3,120 +3,125 @@ ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+$esAdmin = isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin';
+$loggedIn = isset($_SESSION['usuario']);
+$nombre = $loggedIn ? htmlspecialchars($_SESSION['usuario']['nombre']) : '';
 ?>
 
-<header>
-    <div id="header" class="d-flex justify-content-between align-items-center p-3 w-100">
-        <div id="logo-titulo" class="d-flex align-items-center me-3">
-            <img src="public/img/logo.png" alt="Logo" id="logo" style="width: 100px; height: 100px;">
-            <h1 id="titulo" class="ms-3 mb-0">Regalos con Amor by Moni</h1>
-        </div>
+<div id="site-header">
+  <div class="header-top">
+    <!-- Logo + nombre -->
+    <a href="index.php" class="header-brand">
+      <img src="public/img/logo.png" alt="Logo Regalos con Amor by Moni">
+      <div>
+        <div class="brand-name">Regalos con Amor</div>
+        <div class="brand-tagline">by Moni · Regalos personalizados</div>
+      </div>
+    </a>
 
-        <div class="d-flex align-items-center justify-content-end">
-            <form method="GET" action="index.php">
-                <input type="hidden" name="view" value="productos">
-                <input type="text" id="busqueda" name="q" placeholder="Buscar productos..." required>
-                <button id="buscar" type="submit">
-                    <i class="fas fa-search"></i> <span>Buscar</span>
-                </button>
+    <!-- Buscador -->
+    <form method="GET" action="index.php" class="header-search">
+      <input type="hidden" name="view" value="productos">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" name="q" placeholder="Buscar regalos…"
+             value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+      <button type="submit">Buscar</button>
+    </form>
 
+    <!-- Acciones -->
+    <div class="header-actions">
+      <button class="header-btn" onclick="loadView('carrito')">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Cesta</span>
+      </button>
+
+      <?php if ($loggedIn): ?>
+        <button class="header-btn" onclick="loadView('pedidos')">
+          <i class="fas fa-box"></i>
+          <span>Pedidos</span>
+        </button>
+      <?php endif; ?>
+
+      <!-- Dropdown usuario -->
+      <div class="user-dropdown" id="userDropdown">
+        <button class="header-btn" onclick="toggleDropdown()">
+          <i class="fas fa-user-circle"></i>
+          <span><?= $loggedIn ? $nombre : 'Cuenta' ?></span>
+        </button>
+        <div class="dropdown-panel" id="dropdownPanel">
+          <?php if ($loggedIn): ?>
+            <div class="user-greeting">Hola, <?= $nombre ?> 👋</div>
+            <div class="divider"></div>
+            <button onclick="loadView('pedidos'); closeDropdown()">Mis pedidos</button>
+            <button onclick="loadView('carrito'); closeDropdown()">Mi cesta</button>
+            <?php if ($esAdmin): ?>
+              <div class="divider"></div>
+              <a href="index.php?view=admin_productos">Gestionar productos</a>
+              <a href="index.php?view=admin_pedidos">Gestionar pedidos</a>
+              <a href="index.php?view=chat_admin">Chats de clientes</a>
+            <?php endif; ?>
+            <div class="divider"></div>
+            <form method="POST" action="/RCABM/app/controladores/controladorUsuario.php">
+              <input type="hidden" name="accion" value="logout">
+              <button type="submit" class="danger">Cerrar sesión</button>
             </form>
-
-            <div class="dropdown">
-                <button class="btn btn-link p-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <?php
-                    $fotoPerfil = isset($_SESSION['usuario']) ? 'userOn.png' : 'userOff.png';
-                    ?>
-                    <img src="public/img/<?= $fotoPerfil ?>" alt="Perfil" id="fotoPerfil" class="rounded-circle ms-3"
-                        style="width:75px; height: 75px;">
-
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><button class="dropdown-item" id="btnCarrito">Carrito</button></li>
-                    <li><button class="dropdown-item" id="btnPedidos">Seguimiento Pedidos</button></li>
-                    <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin'): ?>
-                        <a href="index.php?view=admin_pedidos" class="btn btn-sm btn-warning" id="btnAdminPedidos">Gestionar
-                            Pedidos</a>
-                        <a href="?view=admin_productos" class="btn btn-sm btn-warning">
-                            Gestionar productos
-                        </a>
-                    <?php endif; ?>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <?php if (isset($_SESSION['usuario'])): ?>
-                        <li class="dropdown-item text-center fw-bold">
-                            <?= 'Hola, ' . htmlspecialchars($_SESSION['usuario']['nombre']) ?>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <form method="POST" action="/RCABM/app/controladores/controladorUsuario.php"
-                                class="text-center">
-                                <input type="hidden" name="accion" value="logout">
-                                <button type="submit" class="dropdown-item text-danger">Salir</button>
-                            </form>
-                        </li>
-                    <?php else: ?>
-                        <li><button class="dropdown-item" id="btnLogin">Login</button></li>
-                        <li><button class="dropdown-item" id="btnRegister">Register</button></li>
-                    <?php endif; ?>
-
-                </ul>
-            </div>
+          <?php else: ?>
+            <button onclick="loadView('login'); closeDropdown()">Iniciar sesión</button>
+            <button onclick="loadView('register'); closeDropdown()">Crear cuenta</button>
+          <?php endif; ?>
         </div>
+      </div>
     </div>
+  </div>
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" id="menu">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>Menú
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav mx-auto">
-                    <button class="nav-link text-dark" id="btnInicio">Inicio</button>
+  <!-- Nav categorías -->
+  <nav id="site-nav">
+    <div class="nav-inner">
+      <button onclick="loadView('productos')" class="btn-categoria" data-categoria="">Todos</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="San Valentin">San Valentín</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Eventos">Eventos</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Navidad">Navidad</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Bebés">Bebés</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Niños">Niños</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Hombre">Hombre</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Mujer">Mujer</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Unisex">Unisex</button>
+      <span class="nav-sep">·</span>
+      <button class="btn-categoria" data-categoria="Lámparas">Lámparas</button>
+      <?php if ($loggedIn): ?>
+        <span class="nav-sep">·</span>
+        <?php if ($esAdmin): ?>
+          <a href="index.php?view=chat_admin" style="font-size:0.8rem;letter-spacing:0.09em;text-transform:uppercase;font-weight:500;color:var(--ink-soft);padding:0.7rem 0.9rem;text-decoration:none;">
+            <i class="fas fa-comments" style="color:var(--gold)"></i> Chats
+          </a>
+        <?php else: ?>
+          <a href="index.php?view=chat" style="font-size:0.8rem;letter-spacing:0.09em;text-transform:uppercase;font-weight:500;color:var(--ink-soft);padding:0.7rem 0.9rem;text-decoration:none;">
+            <i class="fas fa-comment" style="color:var(--rose)"></i> Chat
+          </a>
+        <?php endif; ?>
+      <?php endif; ?>
+    </div>
+  </nav>
+</div>
 
-                    <?php
-                    if (isset($_SESSION['usuario']['id'])) {
-                        if ($_SESSION['usuario']['rol'] === 'admin'): ?>
-                            <a href="index.php?view=chat_admin" class="nav-link text-dark">Chats</a>
-                        <?php else: ?>
-                            <a href="index.php?view=chat" class="nav-link text-dark">Chat con admin</a>
-                        <?php endif;
-                    }
-                    ?>
-
-
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button"
-                            aria-expanded="false">Categorías</a>
-                        <ul class="dropdown-menu" id="desplegable">
-                            <li><button class="dropdown-item btn-categoria" data-categoria="San Valentin">San
-                                    Valentín</button></li>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Eventos">Eventos</button>
-                            </li>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Navidad">Navidad</button>
-                            </li>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Bebés">Bebés</button>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Niños">Niño</button>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Hombre">Hombre</button>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Mujer">Mujer</button>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Unisex">Unisex</button>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="Lámparas">Lámparas</button>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><button class="dropdown-item btn-categoria" data-categoria="">Todos</button></li>
-                        </ul>
-                    </li>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
+<script>
+function toggleDropdown() {
+  const dd = document.getElementById('userDropdown');
+  dd.classList.toggle('open');
+}
+function closeDropdown() {
+  document.getElementById('userDropdown').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('userDropdown');
+  if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+});
+</script>

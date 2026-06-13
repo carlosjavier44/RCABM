@@ -2,82 +2,82 @@
 require_once __DIR__ . '/../../../config/config.php';
 require_once __DIR__ . '/../../../app/modelos/Carrito.php';
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+if (session_status() == PHP_SESSION_NONE) session_start();
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    echo "<p class='text-center text-danger'>Producto no válido.</p>";
-    exit;
+    echo "<p class='alert alert-danger'>Producto no válido.</p>"; exit;
 }
 
-$id = (int) $_GET['id'];
-
-$sql = "SELECT * FROM productos WHERE id = ?";
+$id   = (int) $_GET['id'];
+$sql  = "SELECT * FROM productos WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
-$result = $stmt->get_result();
+$result  = $stmt->get_result();
+$producto = $result->fetch_assoc();
 
-if ($producto = $result->fetch_assoc()):
-?>
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Detalle Producto</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body>
-<div class="container mt-4 ms-5">
-    <div class="row">
-        <div class="col-md-3">
-           <img src="<?= htmlspecialchars($producto['imagen']) ?>" 
-     alt="<?= htmlspecialchars($producto['nombre']) ?>" 
-     class="img-fluid mt-0 mb-0" 
-     style="width: auto; height:300px;" />
-        </div>
-        <div class="col-md-6">
-            <h2><?= htmlspecialchars($producto['nombre']) ?></h2>
-            <p class="text-muted"><?= htmlspecialchars($producto['categoria']) ?></p>
-            <h3 class="text-primary"><?= number_format($producto['precio'], 2, ',', '.') ?> €</h3>
-            <p><?= htmlspecialchars($producto['descripcion']) ?></p>
-
-            <?php if (isset($_SESSION['usuario'])): ?>
-                <form method="post" action="">
-                    <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
-                    <input type="submit" name="añadir_carrito" class="btn btn-success mt-3" value="Añadir al carrito">
-                </form>
-                <div class="mt-2 text-success">
-                    <?= isset($_SESSION['mensaje_carrito']) ? $_SESSION['mensaje_carrito'] : '' ?>
-                    <?php unset($_SESSION['mensaje_carrito']); ?>
-                </div>
-            <?php else: ?>
-                <p class="text-danger mt-3">Inicia sesión para añadir al carrito.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
-</body>
-</html>
-
-<?php
-else:
-    echo "<p class='text-center text-danger'>Producto no encontrado.</p>";
-endif;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir_carrito'], $_SESSION['usuario'])) {
-    $producto_id = (int) $_POST['producto_id'];
-    $usuario_id = $_SESSION['usuario']['id'];
-    $carrito = new Carrito($conn);
-    $carrito->añadirProducto($usuario_id, $producto_id, 1);
-    $_SESSION['mensaje_carrito'] = 'Producto añadido al carrito correctamente';
-    header("Location: /RCABM/index.php?view=detalle&id=" . $producto_id);
-
-    exit;
+if (!$producto) {
+    echo "<div class='empty-state'><i class='fas fa-box-open'></i><p>Producto no encontrado.</p></div>"; exit;
 }
 
-$conn->close();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['añadir_carrito'], $_SESSION['usuario'])) {
+    $carrito = new Carrito($conn);
+    $carrito->añadirProducto($_SESSION['usuario']['id'], (int)$_POST['producto_id'], 1);
+    $_SESSION['mensaje_carrito'] = 'Producto añadido a la cesta';
+    header("Location: /RCABM/index.php?view=detalle&id=" . $id);
+    exit;
+}
 ?>
+
+<section class="detail-section">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="javascript:void(0)" onclick="loadView('productos')">Tienda</a>
+    <span>›</span>
+    <span><?= htmlspecialchars($producto['categoria']) ?></span>
+    <span>›</span>
+    <span><?= htmlspecialchars($producto['nombre']) ?></span>
+  </nav>
+
+  <div class="detail-grid">
+    <!-- Imagen -->
+    <div class="detail-img-wrap">
+      <img src="<?= $producto['imagen'] ? htmlspecialchars($producto['imagen']) : 'public/img/default-producto.png' ?>"
+           alt="<?= htmlspecialchars($producto['nombre']) ?>">
+    </div>
+
+    <!-- Info -->
+    <div class="detail-info">
+      <span class="detail-category"><?= htmlspecialchars($producto['categoria']) ?></span>
+      <h1 class="detail-name"><?= htmlspecialchars($producto['nombre']) ?></h1>
+      <div class="detail-price"><?= number_format($producto['precio'],2,',','.') ?> €</div>
+      <p class="detail-desc"><?= htmlspecialchars($producto['descripcion']) ?></p>
+
+      <?php if (isset($_SESSION['usuario'])): ?>
+        <?php if (isset($_SESSION['mensaje_carrito'])): ?>
+          <div class="alert alert-success"><i class="fas fa-check"></i> <?= $_SESSION['mensaje_carrito'] ?></div>
+          <?php unset($_SESSION['mensaje_carrito']); ?>
+        <?php endif; ?>
+        <form method="post" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+          <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
+          <button type="submit" name="añadir_carrito" class="btn-primary">
+            <i class="fas fa-shopping-bag"></i> Añadir a la cesta
+          </button>
+          <button type="button" class="btn-secondary" onclick="loadView('carrito')">
+            Ver cesta
+          </button>
+        </form>
+      <?php else: ?>
+        <div class="auth-notice">
+          <i class="fas fa-lock" style="color:var(--gold)"></i>
+          <span>
+            <a href="javascript:void(0)" onclick="loadView('login')" style="color:var(--rose);font-weight:500">Inicia sesión</a>
+            para añadir a la cesta.
+          </span>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+</section>
+
+<?php $conn->close(); ?>

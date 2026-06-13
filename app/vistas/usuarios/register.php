@@ -1,73 +1,41 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-?>
+<?php if (session_status() == PHP_SESSION_NONE) session_start(); ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<section class="auth-section">
+  <div class="auth-card">
+    <h2>Crear cuenta</h2>
+    <p class="auth-subtitle">Únete para hacer seguimiento de tus pedidos y comprar fácilmente.</p>
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Registro de usuario</title>
-    <link rel="stylesheet" href="public/css/estilos.css" />
-    <script>
-        // Validación básica en JS para confirmar contraseñas
-        function validarRegistro(event) {
-            const pass1 = document.getElementById("contrasena").value;
-            const pass2 = document.getElementById("confirmar").value;
+    <?php if (isset($_SESSION['error_register'])): ?>
+      <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?= $_SESSION['error_register'] ?></div>
+      <?php unset($_SESSION['error_register']); ?>
+    <?php endif; ?>
 
-            if (pass1 !== pass2) {
-                alert("Las contraseñas no coinciden.");
-                event.preventDefault(); // Previene el envío
-                return false;
-            }
-            return true;
-        }
-    </script>
-</head>
+    <form method="POST" action="/RCABM/app/controladores/controladorUsuario.php">
+      <input type="hidden" name="accion" value="register">
 
-<body>
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre</label>
+        <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" required autofocus>
+      </div>
 
-    <div class="auth-container">
-        <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST" onsubmit="return validarRegistro(event)">
-            <h2>Registro de usuario</h2>
+      <div class="form-group">
+        <label class="form-label" for="email">Correo electrónico</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="tu@email.com" required>
+      </div>
 
-            <?php
-            if (isset($_SESSION['error_register'])) {
-                echo '<p style="color:red;">' . htmlspecialchars($_SESSION['error_register']) . '</p>';
-                unset($_SESSION['error_register']);
-            }
-            if (isset($_SESSION['registro_exitoso'])) {
-                echo '<p style="color:green;">' . htmlspecialchars($_SESSION['registro_exitoso']) . '</p>';
-                unset($_SESSION['registro_exitoso']);
-            }
-            ?>
+      <div class="form-group">
+        <label class="form-label" for="password">Contraseña</label>
+        <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+      </div>
 
-            <input type="hidden" name="accion" value="register" />
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
+        Crear cuenta <i class="fas fa-arrow-right"></i>
+      </button>
+    </form>
 
-            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required />
-
-            <input type="email" id="email" name="email" placeholder="Correo electrónico" required />
-
-            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required />
-            <small>La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, un número y un símbolo.</small><br /><br />
-
-            <input type="password" id="confirmar" name="confirmar_contrasena" placeholder="Confirmar contraseña" required /><br /><br />
-
-            <label style="font-size: 0.9em;">
-                <input type="checkbox" name="acepto_politica" required />
-                Acepto la <a href="/RCABM/public/politica.php" target="_blank">Política de Privacidad</a> y los Términos de uso.
-            </label><br /><br />
-
-            <button type="submit">Registrarme</button>
-
-            <p style="text-align: center; margin-top: 15px;">
-                ¿Ya tienes cuenta? <a href="?view=login">Inicia sesión aquí</a>
-            </p>
-        </form>
-    </div>
-
-</body>
-
-</html>
+    <p class="auth-link">
+      ¿Ya tienes cuenta?
+      <a href="javascript:void(0)" onclick="loadView('login')">Inicia sesión</a>
+    </p>
+  </div>
+</section>

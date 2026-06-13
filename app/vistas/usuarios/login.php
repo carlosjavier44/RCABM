@@ -1,51 +1,36 @@
-<?php 
-include __DIR__ . '/../../../config/config.php';
-include __DIR__ . '/../../controladores/controladorUsuario.php';
+<?php if (session_status() == PHP_SESSION_NONE) session_start(); ?>
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-if (isset($_SESSION['registro_exitoso'])) {
-    echo '<center><p style="color:green;">' . htmlspecialchars($_SESSION['registro_exitoso']) . '</p></center>';
-    unset($_SESSION['registro_exitoso']);
-}
-if (isset($_SESSION['error_register'])) {
-    echo '<p style="color:red;">' . htmlspecialchars($_SESSION['error_register']) . '</p>';
-    unset($_SESSION['error_register']);
-}
-?>
+<section class="auth-section">
+  <div class="auth-card">
+    <h2>Bienvenida de nuevo</h2>
+    <p class="auth-subtitle">Inicia sesión para gestionar tus pedidos y tu cesta.</p>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="public/css/estilos.css">
-</head>
-<body>
+    <?php if (isset($_SESSION['error_login'])): ?>
+      <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?= $_SESSION['error_login'] ?></div>
+      <?php unset($_SESSION['error_login']); ?>
+    <?php endif; ?>
 
-<div class="auth-container">
-    <form class="auth-form" action="/RCABM/app/controladores/controladorUsuario.php" method="POST">
-        <?php
-        if (isset($_SESSION['error_login'])) {
-            echo '<div class="error">' . htmlspecialchars($_SESSION['error_login']) . '</div>';
-            unset($_SESSION['error_login']);
-        }
-        ?>
-        <h2>Iniciar Sesión</h2>
+    <form method="POST" action="/RCABM/app/controladores/controladorUsuario.php">
+      <input type="hidden" name="accion" value="login">
 
-        <input type="hidden" name="accion" value="login" />
+      <div class="form-group">
+        <label class="form-label" for="email">Correo electrónico</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="tu@email.com" required autofocus>
+      </div>
 
-        <input type="email" name="email" placeholder="Correo electrónico" required />
-        <input type="password" name="contrasena" placeholder="Contraseña" required />
+      <div class="form-group">
+        <label class="form-label" for="password">Contraseña</label>
+        <input class="form-input" type="password" id="password" name="password" placeholder="••••••••" required>
+      </div>
 
-        <button type="submit">Entrar</button>
-
-        <p style="text-align: center; margin-top: 15px;">
-            ¿No tienes cuenta? <a href="?view=register">Regístrate aquí</a>
-        </p>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem">
+        Entrar <i class="fas fa-arrow-right"></i>
+      </button>
     </form>
-</div>
 
-</body>
-</html>
+    <p class="auth-link">
+      ¿Aún no tienes cuenta?
+      <a href="javascript:void(0)" onclick="loadView('register')">Regístrate gratis</a>
+    </p>
+  </div>
+</section>
